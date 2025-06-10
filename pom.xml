@@ -9,6 +9,7 @@
         <module>authentication</module>
         <module>common</module>
         <module>test</module>
+        <module>products</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
