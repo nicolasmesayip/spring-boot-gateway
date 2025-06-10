@@ -2,6 +2,8 @@ package com.nicolasmesa.springboot.usermanagement.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.Date;
 
@@ -9,25 +11,40 @@ import java.util.Date;
 @Data
 @Table(name = "tb_users")
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(nullable = false)
+    @Size(min = 1, max = 50, message = "First name must be between 2 and 50 characters")
     private String firstName;
+
     @Column(nullable = false)
+    @Size(min = 1, max = 100, message = "Last name must be between 2 and 100 characters")
     private String lastName;
+
     @Column(nullable = false, unique = true)
+    @Size(min = 1, max = 100, message = "Email address must be between 1 and 100 characters")
     private String emailAddress;
+
     @Column(nullable = false)
+    @Size(min = 1, max = 15, message = "Mobile number must be between 1 and 15 characters")
     private String mobileNumber;
+
     @Column(nullable = false)
     private String countryCode;
+
     @Column(nullable = false)
+    @Size(min = 1, max = 255, message = "Home address must be between 1 and 255 characters")
     private String homeAddress;
+
     @Column(nullable = false)
     private Date dateOfBirth;
+
     @Column(updatable = false)
     private LocalDateTime createdAt;
+
     private LocalDateTime updatedAt;
 
     public User(String firstName, String lastName, String emailAddress, String mobileNumber, String countryCode, String homeAddress, Date dateOfBirth) {

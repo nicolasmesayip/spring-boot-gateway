@@ -6,18 +6,20 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Data;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @Entity
 @Data
 @Table(name = "tb_email_verification")
 public class EmailVerification {
+
     @Id
     @Column(nullable = false, unique = true)
     private String email;
+
     @Column(nullable = false)
     private int verificationOtpCode;
+
     @Column(nullable = false)
     private LocalDateTime requestTimestamp;
 

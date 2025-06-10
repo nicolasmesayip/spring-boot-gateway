@@ -9,19 +9,26 @@ import java.time.LocalDateTime;
 @Data
 @Table(name = "tb_auth")
 public class UserAuthentication {
+
     @Id
     @Column(nullable = false, unique = true, name = "email")
     private String email;
+
     @Column(nullable = false, name = "password")
     private String hashedPassword;
+
     @Column(name = "failed_login_attempts")
     private int failedLoginAttempts;
+
     @Column(name = "account_locked")
     private boolean accountLocked;
+
     @Column(name = "password_updated_ts")
     private LocalDateTime passwordUpdatedAt;
+
     @Column(name = "last_login_ts")
     private LocalDateTime lastLoginAt;
+
     @Column(name = "register_ts")
     private LocalDateTime registeredAt;
 
