@@ -3,10 +3,9 @@ package com.nicolasmesa.springboot.products.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Data
@@ -16,41 +15,47 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @NotNull
-    @Size(min = 1, max = 50, message = "Category must be between 1 - 50 characters")
+    @Column(nullable = false, length = 50)
     private String name;
 
-    @NotNull
-    @Size(min = 1, max = 255, message = "Category must be between 1 - 255 characters")
+    @Column(nullable = false, length = 255)
     private String description;
 
-    @NotNull
-    @Size(min = 1, max = 50, message = "Category must be between 1 - 50 characters")
+    @Column(nullable = false, length = 50)
     private String category;
 
-    @NotNull
-    @Min(value = 0, message = "Price cannot be negative.")
+    @Column(nullable = false)
     private double price;
 
-    @NotNull
-    @Min(value = 0, message = "Stock Available cannot be negative.")
+    @Column(nullable = false, length = 3)
+    private String currency;
+
+    @Column(nullable = false)
     private int stockAvailable;
 
-    @NotNull
+    @Column(nullable = false)
+    private boolean isAvailable;
+
+    @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    @NotNull
+    @Column(nullable = false)
     private LocalDateTime updatedAt;
+
+    @OneToMany(mappedBy = "product")
+    private List<DiscountedProduct> discountedProducts = new ArrayList<>();
 
     public Product() {
     }
 
-    public Product(String name, String description, String category, double price, int stockAvailable) {
+    public Product(String name, String description, String category, double price, String currency, int stockAvailable, boolean isAvailable) {
         this.name = name;
         this.description = description;
         this.category = category;
         this.price = price;
+        this.currency = currency;
         this.stockAvailable = stockAvailable;
+        this.isAvailable = isAvailable;
     }
 
     public long getId() {
@@ -96,6 +101,7 @@ public class Product {
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
     }
 
     @PreUpdate
@@ -117,5 +123,21 @@ public class Product {
 
     public void setCategory(String category) {
         this.category = category;
+    }
+
+    public boolean isAvailable() {
+        return isAvailable;
+    }
+
+    public void setAvailable(boolean available) {
+        isAvailable = available;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
     }
 }
