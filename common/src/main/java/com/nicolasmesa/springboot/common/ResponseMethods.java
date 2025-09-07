@@ -28,6 +28,10 @@ public class ResponseMethods {
         return errorResponse(error, HttpStatus.NOT_FOUND);
     }
 
+    public static <T> ResponseEntity<ApiResponse<T>> notFound(String error) {
+        return notFound(List.of(error));
+    }
+
     public static <T> ResponseEntity<ApiResponse<T>> successResponse(T data, HttpStatus status) {
         ApiResponse<T> response = new ApiResponse<>();
         response.setSuccess(true);

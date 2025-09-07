@@ -1,7 +1,7 @@
 package com.nicolasmesa.springboot.products.controller;
 
-import com.nicolasmesa.springboot.products.config.ResponseMethods;
-import com.nicolasmesa.springboot.products.config.model.ApiResponse;
+import com.nicolasmesa.springboot.common.ResponseMethods;
+import com.nicolasmesa.springboot.common.model.ApiResponse;
 import com.nicolasmesa.springboot.products.dto.ProductDTO;
 import com.nicolasmesa.springboot.products.entity.Product;
 import com.nicolasmesa.springboot.products.mapper.ProductMapper;

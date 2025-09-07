@@ -50,6 +50,12 @@
             <artifactId>jakarta.validation-api</artifactId>
             <version>3.0.0</version> <!-- Check for the appropriate version -->
         </dependency>
+        <dependency>
+            <groupId>com.nicolasmesa.springboot</groupId>
+            <artifactId>common</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
         <!--        <dependency>-->
         <!--            <groupId>com.nicolasmesa.springboot</groupId>-->
         <!--            <artifactId>common</artifactId>-->

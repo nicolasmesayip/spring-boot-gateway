@@ -46,5 +46,11 @@
             <artifactId>spring-security-config</artifactId>
             <version>6.4.2</version>
         </dependency>
+        <dependency>
+            <groupId>com.nicolasmesa.springboot</groupId>
+            <artifactId>common</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 </project>
