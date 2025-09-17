@@ -2,8 +2,6 @@ package com.nicolasmesa.springboot.authentication.service;
 
 import com.nicolasmesa.springboot.authentication.entity.UserAuthentication;
 import com.nicolasmesa.springboot.authentication.repository.UserAuthenticationRepository;
-import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -12,10 +10,12 @@ import org.springframework.stereotype.Component;
 import java.util.Collections;
 
 @Component
-@AllArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
-    @Autowired
     private final UserAuthenticationRepository userRepository;
+
+    public CustomUserDetailsService(UserAuthenticationRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {

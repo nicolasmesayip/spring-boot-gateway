@@ -3,7 +3,6 @@ package com.nicolasmesa.springboot.authentication.service;
 import com.nicolasmesa.springboot.authentication.entity.EmailConfiguration;
 import com.nicolasmesa.springboot.authentication.entity.EmailVerification;
 import com.nicolasmesa.springboot.authentication.repository.EmailVerificationRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.mail.*;
@@ -17,24 +16,25 @@ import java.util.Random;
 
 @Service
 public class EmailVerificationServiceImpl implements EmailVerificationService {
-    @Autowired
-    private EmailConfiguration emailConfiguration;
+    private final EmailConfiguration emailConfiguration;
+    private final EmailVerificationRepository emailVerificationRepository;
     private final Session session;
-    @Autowired
-    private EmailVerificationRepository emailVerificationRepository;
 
-    public EmailVerificationServiceImpl(EmailConfiguration emailConfiguration) {
+    public EmailVerificationServiceImpl(EmailVerificationRepository emailVerificationRepository, EmailConfiguration emailConfiguration) {
+        this.emailVerificationRepository = emailVerificationRepository;
+        this.emailConfiguration = emailConfiguration;
+
         Properties properties = new Properties();
 
-        properties.put("mail.smtp.host", emailConfiguration.getHost());
-        properties.put("mail.smtp.port", emailConfiguration.getPort());
-        properties.put("mail.smtp.auth", emailConfiguration.isAuth());
-        properties.put("mail.smtp.starttls.enable", emailConfiguration.isEnableTLS());
+        properties.put("mail.smtp.host", emailConfiguration.host());
+        properties.put("mail.smtp.port", emailConfiguration.port());
+        properties.put("mail.smtp.auth", emailConfiguration.auth());
+        properties.put("mail.smtp.starttls.enable", emailConfiguration.enableTLS());
 
         this.session = Session.getInstance(properties, new Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(emailConfiguration.getSenderEmail(), emailConfiguration.getSenderPassword());
+                return new PasswordAuthentication(emailConfiguration.senderEmail(), emailConfiguration.senderPassword());
             }
         });
     }
@@ -44,7 +44,7 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
 
         try {
             Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(emailConfiguration.getSenderEmail()));
+            message.setFrom(new InternetAddress(emailConfiguration.senderEmail()));
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(emailRecipient));
             message.setSubject("Your Verification Code");
 
