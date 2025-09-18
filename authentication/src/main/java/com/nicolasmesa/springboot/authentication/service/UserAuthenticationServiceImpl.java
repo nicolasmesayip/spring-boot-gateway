@@ -1,9 +1,11 @@
 package com.nicolasmesa.springboot.authentication.service;
 
-import com.nicolasmesa.springboot.authentication.entity.AuthResponse;
+import com.nicolasmesa.springboot.authentication.dto.AuthResponse;
+import com.nicolasmesa.springboot.authentication.dto.EmailVerificationDto;
+import com.nicolasmesa.springboot.authentication.dto.LoginCredentialsDto;
 import com.nicolasmesa.springboot.authentication.entity.EmailVerification;
-import com.nicolasmesa.springboot.authentication.entity.LoginCredentials;
 import com.nicolasmesa.springboot.authentication.entity.UserAuthentication;
+import com.nicolasmesa.springboot.authentication.mapper.EmailVerificationMapper;
 import com.nicolasmesa.springboot.authentication.repository.UserAuthenticationRepository;
 import com.nicolasmesa.springboot.common.JwtTokenUtil;
 import org.springframework.http.ResponseEntity;
@@ -38,7 +40,7 @@ public class UserAuthenticationServiceImpl implements UserAuthenticationService 
     }
 
     @Override
-    public ResponseEntity<AuthResponse> login(LoginCredentials credentials) {
+    public ResponseEntity<AuthResponse> login(LoginCredentialsDto credentials) {
         Optional<UserAuthentication> userAuthentication = userAuthenticationRepository.findById(credentials.email());
 
         if (userAuthentication.isEmpty()) return ResponseEntity.notFound().build();
@@ -62,7 +64,7 @@ public class UserAuthenticationServiceImpl implements UserAuthenticationService 
     }
 
     @Override
-    public ResponseEntity<AuthResponse> register(LoginCredentials credentials) {
+    public ResponseEntity<AuthResponse> register(LoginCredentialsDto credentials) {
         if (userAuthenticationRepository.existsById(credentials.email())) return ResponseEntity.status(409).build();
 
         UserAuthentication user = new UserAuthentication(credentials.email(), encodePassword(credentials.password()));
@@ -81,7 +83,9 @@ public class UserAuthenticationServiceImpl implements UserAuthenticationService 
     }
 
     @Override
-    public ResponseEntity<AuthResponse> verifyOTPCode(EmailVerification emailDetails) {
+    public ResponseEntity<AuthResponse> verifyOTPCode(EmailVerificationDto emailDetailsDto) {
+        EmailVerification emailDetails = EmailVerificationMapper.INSTANCE.toEntity(emailDetailsDto);
+
         if (!userAuthenticationRepository.existsById(emailDetails.getEmail())) return ResponseEntity.notFound().build();
         if (!emailVerificationServiceImpl.isOTPCodeValid(emailDetails)) return ResponseEntity.status(401).build();
         emailVerificationServiceImpl.deleteValidatedOTPCode(emailDetails);
@@ -90,7 +94,7 @@ public class UserAuthenticationServiceImpl implements UserAuthenticationService 
     }
 
     @Override
-    public ResponseEntity<AuthResponse> updatePasswordRequest(LoginCredentials credentials) {
+    public ResponseEntity<AuthResponse> updatePasswordRequest(LoginCredentialsDto credentials) {
         if (!userAuthenticationRepository.existsById(credentials.email())) return ResponseEntity.notFound().build();
         userAuthenticationRepository.updatePassword(credentials.email(), encodePassword(credentials.password()), LocalDateTime.now());
         userAuthenticationRepository.unlockAccount(credentials.email());
@@ -104,7 +108,7 @@ public class UserAuthenticationServiceImpl implements UserAuthenticationService 
         return ResponseEntity.noContent().build();
     }
 
-    private boolean verifyPassword(UserAuthentication userAuthentication, LoginCredentials credentials) {
+    private boolean verifyPassword(UserAuthentication userAuthentication, LoginCredentialsDto credentials) {
         return passwordEncoder.matches(credentials.password(), userAuthentication.getHashedPassword());
     }
 

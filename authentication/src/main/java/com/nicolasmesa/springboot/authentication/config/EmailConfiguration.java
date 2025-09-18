@@ -1,4 +1,4 @@
-package com.nicolasmesa.springboot.authentication.entity;
+package com.nicolasmesa.springboot.authentication.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

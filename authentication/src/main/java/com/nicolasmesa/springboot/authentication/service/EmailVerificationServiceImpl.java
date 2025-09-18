@@ -1,6 +1,6 @@
 package com.nicolasmesa.springboot.authentication.service;
 
-import com.nicolasmesa.springboot.authentication.entity.EmailConfiguration;
+import com.nicolasmesa.springboot.authentication.config.EmailConfiguration;
 import com.nicolasmesa.springboot.authentication.entity.EmailVerification;
 import com.nicolasmesa.springboot.authentication.repository.EmailVerificationRepository;
 import org.springframework.stereotype.Service;
@@ -69,7 +69,7 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
         if (otpFromDb.isEmpty()) return false;
         if (otpFromDb.get().getVerificationOtpCode() != emailVerificationDetails.getVerificationOtpCode()) return false;
 
-        Duration duration = Duration.between(otpFromDb.get().getRequestTimestamp(), emailVerificationDetails.getRequestTimestamp());
+        Duration duration = Duration.between(otpFromDb.get().getRequestTimestamp(), LocalDateTime.now());
         return duration.toMinutes() <= 30;
     }
 
