@@ -1,14 +1,21 @@
 package com.nicolasmesa.springboot.usermanagement.service;
 
+import com.nicolasmesa.springboot.common.model.ApiResponse;
 import com.nicolasmesa.springboot.usermanagement.entity.User;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.stereotype.Repository;
+import org.springframework.http.ResponseEntity;
 
-import java.util.Optional;
+import java.util.List;
 
-@Repository
-public interface UserService extends JpaRepository<User, Long> {
-    @Query("select u from User u where u.emailAddress = :email")
-    Optional<User> findByEmail(String email);
+public interface UserService {
+    ResponseEntity<ApiResponse<List<User>>> getUsers();
+
+    ResponseEntity<ApiResponse<User>> getUserByEmail(String email, String emailAuthenticated);
+
+    ResponseEntity<ApiResponse<User>> getUserById(Long id, String emailAuthenticated);
+
+    ResponseEntity<ApiResponse<User>> register(User user);
+
+    ResponseEntity<ApiResponse<User>> updateUser(Long id, User updatedUser);
+
+    ResponseEntity<ApiResponse<User>> deleteUser(Long id);
 }

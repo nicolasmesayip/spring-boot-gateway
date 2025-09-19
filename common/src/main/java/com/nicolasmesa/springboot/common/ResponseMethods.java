@@ -24,12 +24,24 @@ public class ResponseMethods {
         return errorResponse(error, HttpStatus.UNAUTHORIZED);
     }
 
+    public static <T> ResponseEntity<ApiResponse<T>> unAuthorized(String error) {
+        return unAuthorized(List.of(error));
+    }
+
     public static <T> ResponseEntity<ApiResponse<T>> notFound(List<String> error) {
         return errorResponse(error, HttpStatus.NOT_FOUND);
     }
 
     public static <T> ResponseEntity<ApiResponse<T>> notFound(String error) {
         return notFound(List.of(error));
+    }
+
+    public static <T> ResponseEntity<ApiResponse<T>> conflict(String error) {
+        return conflict(List.of(error));
+    }
+
+    public static <T> ResponseEntity<ApiResponse<T>> conflict(List<String> error) {
+        return errorResponse(error, HttpStatus.CONFLICT);
     }
 
     public static <T> ResponseEntity<ApiResponse<T>> successResponse(T data, HttpStatus status) {
