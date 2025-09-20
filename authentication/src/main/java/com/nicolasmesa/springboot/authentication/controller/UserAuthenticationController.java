@@ -4,10 +4,9 @@ import com.nicolasmesa.springboot.authentication.dto.AuthResponse;
 import com.nicolasmesa.springboot.authentication.dto.EmailVerificationDto;
 import com.nicolasmesa.springboot.authentication.dto.LoginCredentialsDto;
 import com.nicolasmesa.springboot.authentication.service.UserAuthenticationService;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import javax.validation.constraints.NotNull;
 
 @RestController
 @RequestMapping(path = "/api/auth")

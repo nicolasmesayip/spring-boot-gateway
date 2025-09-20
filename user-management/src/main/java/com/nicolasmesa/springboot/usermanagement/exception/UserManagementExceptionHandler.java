@@ -1,13 +1,14 @@
 package com.nicolasmesa.springboot.usermanagement.exception;
 
 import com.nicolasmesa.springboot.common.ResponseMethods;
+import com.nicolasmesa.springboot.common.exceptions.GlobalExceptionHandler;
 import com.nicolasmesa.springboot.common.model.ApiResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
-public class GlobalExceptionHandler {
+public class UserManagementExceptionHandler extends GlobalExceptionHandler {
 
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<ApiResponse<Object>> handleUserNotFound(UserNotFoundException ex) {

@@ -1,12 +1,10 @@
 package com.nicolasmesa.springboot.usermanagement.service;
 
-import com.nicolasmesa.springboot.common.ResponseMethods;
-import com.nicolasmesa.springboot.common.model.ApiResponse;
+import com.nicolasmesa.springboot.common.exceptions.UnAuthorizedException;
 import com.nicolasmesa.springboot.usermanagement.entity.User;
 import com.nicolasmesa.springboot.usermanagement.exception.UserAlreadyExistsException;
 import com.nicolasmesa.springboot.usermanagement.exception.UserNotFoundException;
 import com.nicolasmesa.springboot.usermanagement.repository.UserRepository;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,41 +19,45 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseEntity<ApiResponse<List<User>>> getUsers() {
-        return ResponseMethods.ok(userRepository.findAll());
+    public List<User> getUsers() {
+        return userRepository.findAll();
     }
 
     @Override
-    public ResponseEntity<ApiResponse<User>> getUserByEmail(String email, String emailAuthenticated) {
-        if (!email.equals(emailAuthenticated)) return ResponseMethods.unAuthorized("Unauthorized");
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException(email));
-        return ResponseMethods.ok(user);
+    public User getUserByEmail(String email, String authenticatedUserEmail) {
+        if (!email.equals(authenticatedUserEmail)) throw new UnAuthorizedException();
+        return userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException(email));
     }
 
     @Override
-    public ResponseEntity<ApiResponse<User>> getUserById(Long id, String emailAuthenticated) {
+    public User getUserById(Long id, String authenticatedUserEmail) {
         User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
-        if (!user.getEmailAddress().equals(emailAuthenticated)) return ResponseMethods.unAuthorized("Unauthorized");
-        return ResponseMethods.ok(user);
+        if (!user.getEmailAddress().equals(authenticatedUserEmail)) throw new UnAuthorizedException();
+
+        return user;
     }
 
     @Override
-    public ResponseEntity<ApiResponse<User>> register(User user) {
+    public User register(User user) {
         userRepository.findByEmail(user.getEmailAddress()).ifPresent(user1 -> {
             throw new UserAlreadyExistsException(user.getEmailAddress());
         });
-        return ResponseMethods.ok(userRepository.save(user));
+        return userRepository.save(user);
     }
 
     @Override
-    public ResponseEntity<ApiResponse<User>> updateUser(Long id, User updatedUser) {
-        userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
-        return ResponseMethods.ok(userRepository.save(updatedUser));
+    public void updateUser(Long id, User updatedUser) {
+        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
+        if (!user.getEmailAddress().equals(updatedUser.getEmailAddress())) {
+            throw new IllegalArgumentException("Email cannot be changed");
+        }
+        updatedUser.setId(id);
+        userRepository.save(updatedUser);
     }
 
     @Override
-    public ResponseEntity<ApiResponse<User>> deleteUser(Long id) {
+    public void deleteUser(Long id) {
         userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
-        return ResponseMethods.noContent();
+        userRepository.deleteById(id);
     }
 }

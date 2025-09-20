@@ -3,7 +3,6 @@ package com.nicolasmesa.springboot.usermanagement.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.Date;
 
@@ -16,129 +15,32 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    @Size(min = 1, max = 50, message = "First name must be between 2 and 50 characters")
+    @Column(nullable = false, length = 50)
     private String firstName;
 
-    @Column(nullable = false)
-    @Size(min = 1, max = 100, message = "Last name must be between 2 and 100 characters")
+    @Column(nullable = false, length = 100)
     private String lastName;
 
-    @Column(nullable = false, unique = true)
-    @Size(min = 1, max = 100, message = "Email address must be between 1 and 100 characters")
+    @Column(nullable = false, unique = true, length = 100, updatable = false)
     private String emailAddress;
 
-    @Column(nullable = false)
-    @Size(min = 1, max = 15, message = "Mobile number must be between 1 and 15 characters")
+    @Column(nullable = false, length = 15)
     private String mobileNumber;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 2)
     private String countryCode;
 
-    @Column(nullable = false)
-    @Size(min = 1, max = 255, message = "Home address must be between 1 and 255 characters")
+    @Column(nullable = false, length = 255)
     private String homeAddress;
 
     @Column(nullable = false)
     private Date dateOfBirth;
 
-    @Column(updatable = false)
+    @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    @Column(nullable = false)
     private LocalDateTime updatedAt;
-
-    public User(String firstName, String lastName, String emailAddress, String mobileNumber, String countryCode, String homeAddress, Date dateOfBirth) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.emailAddress = emailAddress;
-        this.mobileNumber = mobileNumber;
-        this.countryCode = countryCode;
-        this.homeAddress = homeAddress;
-        this.dateOfBirth = dateOfBirth;
-    }
-
-    public User() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getEmailAddress() {
-        return emailAddress;
-    }
-
-    public void setEmailAddress(String emailAddress) {
-        this.emailAddress = emailAddress;
-    }
-
-    public String getMobileNumber() {
-        return mobileNumber;
-    }
-
-    public void setMobileNumber(String mobileNumber) {
-        this.mobileNumber = mobileNumber;
-    }
-
-    public String getCountryCode() {
-        return countryCode;
-    }
-
-    public void setCountryCode(String countryCode) {
-        this.countryCode = countryCode;
-    }
-
-    public String getHomeAddress() {
-        return homeAddress;
-    }
-
-    public void setHomeAddress(String homeAddress) {
-        this.homeAddress = homeAddress;
-    }
-
-    public Date getDateOfBirth() {
-        return dateOfBirth;
-    }
-
-    public void setDateOfBirth(Date dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
 
     @PrePersist
     protected void onCreate() {

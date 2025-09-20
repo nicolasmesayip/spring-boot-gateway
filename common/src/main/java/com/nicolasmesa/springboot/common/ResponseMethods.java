@@ -12,12 +12,20 @@ public class ResponseMethods {
         return successResponse(data, HttpStatus.OK);
     }
 
+    public static <T> ResponseEntity<ApiResponse<T>> created(T data) {
+        return successResponse(data, HttpStatus.CREATED);
+    }
+
     public static <T> ResponseEntity<ApiResponse<T>> noContent() {
         return successResponse(null, HttpStatus.NO_CONTENT);
     }
 
     public static <T> ResponseEntity<ApiResponse<T>> badRequest(List<String> error) {
         return errorResponse(error, HttpStatus.BAD_REQUEST);
+    }
+
+    public static <T> ResponseEntity<ApiResponse<T>> badRequest(String error) {
+        return badRequest(List.of(error));
     }
 
     public static <T> ResponseEntity<ApiResponse<T>> unAuthorized(List<String> error) {
