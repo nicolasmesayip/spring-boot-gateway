@@ -1,4 +1,4 @@
-package com.nicolasmesa.springboot.usermanagement.exception;
+package com.nicolasmesa.springboot.common.exceptions;
 
 public class UserAlreadyExistsException extends RuntimeException {
     public UserAlreadyExistsException(String email) {

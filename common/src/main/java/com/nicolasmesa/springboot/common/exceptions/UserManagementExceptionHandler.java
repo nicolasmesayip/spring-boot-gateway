@@ -1,7 +1,6 @@
-package com.nicolasmesa.springboot.usermanagement.exception;
+package com.nicolasmesa.springboot.common.exceptions;
 
 import com.nicolasmesa.springboot.common.ResponseMethods;
-import com.nicolasmesa.springboot.common.exceptions.GlobalExceptionHandler;
 import com.nicolasmesa.springboot.common.model.ApiResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;

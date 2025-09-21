@@ -28,38 +28,34 @@ public class ResponseMethods {
         return badRequest(List.of(error));
     }
 
-    public static <T> ResponseEntity<ApiResponse<T>> unAuthorized(List<String> error) {
+    public static <T> ResponseEntity<ApiResponse<T>> unAuthorized(String error) {
         return errorResponse(error, HttpStatus.UNAUTHORIZED);
     }
 
-    public static <T> ResponseEntity<ApiResponse<T>> unAuthorized(String error) {
-        return unAuthorized(List.of(error));
-    }
-
-    public static <T> ResponseEntity<ApiResponse<T>> notFound(List<String> error) {
+    public static <T> ResponseEntity<ApiResponse<T>> notFound(String error) {
         return errorResponse(error, HttpStatus.NOT_FOUND);
     }
 
-    public static <T> ResponseEntity<ApiResponse<T>> notFound(String error) {
-        return notFound(List.of(error));
-    }
-
     public static <T> ResponseEntity<ApiResponse<T>> conflict(String error) {
-        return conflict(List.of(error));
-    }
-
-    public static <T> ResponseEntity<ApiResponse<T>> conflict(List<String> error) {
         return errorResponse(error, HttpStatus.CONFLICT);
     }
 
-    public static <T> ResponseEntity<ApiResponse<T>> successResponse(T data, HttpStatus status) {
+    public static <T> ResponseEntity<ApiResponse<T>> forbidden(String error) {
+        return errorResponse(error, HttpStatus.FORBIDDEN);
+    }
+
+    private static <T> ResponseEntity<ApiResponse<T>> successResponse(T data, HttpStatus status) {
         ApiResponse<T> response = new ApiResponse<>();
         response.setSuccess(true);
         response.setData(data);
         return ResponseEntity.status(status).body(response);
     }
 
-    public static <T> ResponseEntity<ApiResponse<T>> errorResponse(List<String> error, HttpStatus status) {
+    private static <T> ResponseEntity<ApiResponse<T>> errorResponse(String error, HttpStatus status) {
+        return errorResponse(List.of(error), status);
+    }
+
+    private static <T> ResponseEntity<ApiResponse<T>> errorResponse(List<String> error, HttpStatus status) {
         ApiResponse<T> response = new ApiResponse<>();
         response.setSuccess(false);
         response.setErrors(error);

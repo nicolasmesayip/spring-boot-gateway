@@ -1,9 +1,9 @@
 package com.nicolasmesa.springboot.usermanagement.service;
 
 import com.nicolasmesa.springboot.common.exceptions.UnAuthorizedException;
+import com.nicolasmesa.springboot.common.exceptions.UserAlreadyExistsException;
+import com.nicolasmesa.springboot.common.exceptions.UserNotFoundException;
 import com.nicolasmesa.springboot.usermanagement.entity.User;
-import com.nicolasmesa.springboot.usermanagement.exception.UserAlreadyExistsException;
-import com.nicolasmesa.springboot.usermanagement.exception.UserNotFoundException;
 import com.nicolasmesa.springboot.usermanagement.repository.UserRepository;
 import org.springframework.stereotype.Service;
 

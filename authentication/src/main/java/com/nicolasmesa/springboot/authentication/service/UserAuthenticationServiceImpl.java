@@ -1,14 +1,15 @@
 package com.nicolasmesa.springboot.authentication.service;
 
 import com.nicolasmesa.springboot.authentication.dto.AuthResponse;
-import com.nicolasmesa.springboot.authentication.dto.EmailVerificationDto;
 import com.nicolasmesa.springboot.authentication.dto.LoginCredentialsDto;
 import com.nicolasmesa.springboot.authentication.entity.EmailVerification;
 import com.nicolasmesa.springboot.authentication.entity.UserAuthentication;
-import com.nicolasmesa.springboot.authentication.mapper.EmailVerificationMapper;
+import com.nicolasmesa.springboot.authentication.exception.AccountLockedException;
 import com.nicolasmesa.springboot.authentication.repository.UserAuthenticationRepository;
 import com.nicolasmesa.springboot.common.JwtTokenUtil;
-import org.springframework.http.ResponseEntity;
+import com.nicolasmesa.springboot.common.exceptions.UnAuthorizedException;
+import com.nicolasmesa.springboot.common.exceptions.UserAlreadyExistsException;
+import com.nicolasmesa.springboot.common.exceptions.UserNotFoundException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -17,7 +18,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 @Service
 public class UserAuthenticationServiceImpl implements UserAuthenticationService {
@@ -40,18 +40,16 @@ public class UserAuthenticationServiceImpl implements UserAuthenticationService 
     }
 
     @Override
-    public ResponseEntity<AuthResponse> login(LoginCredentialsDto credentials) {
-        Optional<UserAuthentication> userAuthentication = userAuthenticationRepository.findById(credentials.email());
+    public AuthResponse login(LoginCredentialsDto credentials) {
+        UserAuthentication userAuthentication = userAuthenticationRepository.findById(credentials.email()).orElseThrow(() -> new UserNotFoundException(credentials.email()));
 
-        if (userAuthentication.isEmpty()) return ResponseEntity.notFound().build();
-        UserAuthentication userAuth = userAuthentication.get();
-
-        if (userAuth.isAccountLocked()) return ResponseEntity.status(429).build();
-        if (!verifyPassword(userAuth, credentials)) {
-            increaseFailedLoginAttempt(userAuth);
-            return ResponseEntity.status(401).build();
+        if (userAuthentication.isAccountLocked()) throw new AccountLockedException();
+        if (!verifyPassword(userAuthentication, credentials)) {
+            increaseFailedLoginAttempt(userAuthentication);
+            throw new UnAuthorizedException();
         }
-        updateLastLoginAt(userAuth);
+
+        updateLastLoginAt(userAuthentication);
 
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 credentials.email(),
@@ -59,53 +57,48 @@ public class UserAuthenticationServiceImpl implements UserAuthenticationService 
         ));
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        AuthResponse authResponse = new AuthResponse(jwtTokenUtil.generateToken(authentication), "Logged in successfully");
-        return ResponseEntity.ok(authResponse);
+        return new AuthResponse(jwtTokenUtil.generateToken(authentication), "Logged in successfully");
     }
 
     @Override
-    public ResponseEntity<AuthResponse> register(LoginCredentialsDto credentials) {
-        if (userAuthenticationRepository.existsById(credentials.email())) return ResponseEntity.status(409).build();
+    public void register(LoginCredentialsDto credentials) {
+        if (userAuthenticationRepository.existsById(credentials.email()))
+            throw new UserAlreadyExistsException(credentials.email());
 
         UserAuthentication user = new UserAuthentication(credentials.email(), encodePassword(credentials.password()));
         userAuthenticationRepository.save(user);
-
-        AuthResponse authResponse = new AuthResponse(null, "User registered");
-        return ResponseEntity.ok(authResponse);
     }
 
     @Override
-    public ResponseEntity<AuthResponse> resetPassword(String email) {
-        if (!userAuthenticationRepository.existsById(email)) return ResponseEntity.notFound().build();
+    public AuthResponse resetPassword(String email) {
+        if (!userAuthenticationRepository.existsById(email)) throw new UserNotFoundException(email);
         emailVerificationServiceImpl.sendEmail(email);
-        AuthResponse authResponse = new AuthResponse(null, "Email verification sent.");
-        return ResponseEntity.ok(authResponse);
+        return new AuthResponse(null, "Email verification sent.");
     }
 
     @Override
-    public ResponseEntity<AuthResponse> verifyOTPCode(EmailVerificationDto emailDetailsDto) {
-        EmailVerification emailDetails = EmailVerificationMapper.INSTANCE.toEntity(emailDetailsDto);
+    public AuthResponse verifyOTPCode(EmailVerification emailDetails) {
+        if (!userAuthenticationRepository.existsById(emailDetails.getEmail()))
+            throw new UserNotFoundException(emailDetails.getEmail());
+        if (!emailVerificationServiceImpl.isOTPCodeValid(emailDetails)) throw new UnAuthorizedException();
 
-        if (!userAuthenticationRepository.existsById(emailDetails.getEmail())) return ResponseEntity.notFound().build();
-        if (!emailVerificationServiceImpl.isOTPCodeValid(emailDetails)) return ResponseEntity.status(401).build();
         emailVerificationServiceImpl.deleteValidatedOTPCode(emailDetails);
-        AuthResponse authResponseDto = new AuthResponse(null, "Email verified successfully.");
-        return ResponseEntity.ok(authResponseDto);
+        return new AuthResponse(null, "Email verified successfully.");
     }
 
     @Override
-    public ResponseEntity<AuthResponse> updatePasswordRequest(LoginCredentialsDto credentials) {
-        if (!userAuthenticationRepository.existsById(credentials.email())) return ResponseEntity.notFound().build();
+    public void updatePasswordRequest(LoginCredentialsDto credentials) {
+        if (!userAuthenticationRepository.existsById(credentials.email()))
+            throw new UserNotFoundException(credentials.email());
+
         userAuthenticationRepository.updatePassword(credentials.email(), encodePassword(credentials.password()), LocalDateTime.now());
         userAuthenticationRepository.unlockAccount(credentials.email());
-        return ResponseEntity.noContent().build();
     }
 
     @Override
-    public ResponseEntity<AuthResponse> deleteAccount(String email) {
-        if (!userAuthenticationRepository.existsById(email)) return ResponseEntity.notFound().build();
+    public void deleteAccount(String email) {
+        if (!userAuthenticationRepository.existsById(email)) throw new UserNotFoundException(email);
         userAuthenticationRepository.deleteById(email);
-        return ResponseEntity.noContent().build();
     }
 
     private boolean verifyPassword(UserAuthentication userAuthentication, LoginCredentialsDto credentials) {

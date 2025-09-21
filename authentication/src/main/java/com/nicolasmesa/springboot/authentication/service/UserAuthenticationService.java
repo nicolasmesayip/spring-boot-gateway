@@ -1,20 +1,19 @@
 package com.nicolasmesa.springboot.authentication.service;
 
 import com.nicolasmesa.springboot.authentication.dto.AuthResponse;
-import com.nicolasmesa.springboot.authentication.dto.EmailVerificationDto;
 import com.nicolasmesa.springboot.authentication.dto.LoginCredentialsDto;
-import org.springframework.http.ResponseEntity;
+import com.nicolasmesa.springboot.authentication.entity.EmailVerification;
 
 public interface UserAuthenticationService {
-    ResponseEntity<AuthResponse> login(LoginCredentialsDto credentials);
+    AuthResponse login(LoginCredentialsDto credentials);
 
-    ResponseEntity<AuthResponse> register(LoginCredentialsDto credentials);
+    void register(LoginCredentialsDto credentials);
 
-    ResponseEntity<AuthResponse> resetPassword(String email);
+    AuthResponse resetPassword(String email);
 
-    ResponseEntity<AuthResponse> verifyOTPCode(EmailVerificationDto emailDetails);
+    AuthResponse verifyOTPCode(EmailVerification emailDetails);
 
-    ResponseEntity<AuthResponse> updatePasswordRequest(LoginCredentialsDto credentials);
+    void updatePasswordRequest(LoginCredentialsDto credentials);
 
-    ResponseEntity<AuthResponse> deleteAccount(String email);
+    void deleteAccount(String email);
 }
