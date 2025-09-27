@@ -1,14 +1,13 @@
 package com.nicolasmesa.springboot.authentication.service;
 
 import com.nicolasmesa.springboot.authentication.dto.AuthResponse;
-import com.nicolasmesa.springboot.authentication.dto.LoginCredentialsDto;
+import com.nicolasmesa.springboot.authentication.dto.UserCredentialsDto;
 import com.nicolasmesa.springboot.authentication.entity.EmailVerification;
 import com.nicolasmesa.springboot.authentication.entity.UserAuthentication;
 import com.nicolasmesa.springboot.authentication.exception.AccountLockedException;
 import com.nicolasmesa.springboot.authentication.repository.UserAuthenticationRepository;
 import com.nicolasmesa.springboot.common.JwtTokenUtil;
 import com.nicolasmesa.springboot.common.exceptions.UnAuthorizedException;
-import com.nicolasmesa.springboot.common.exceptions.UserAlreadyExistsException;
 import com.nicolasmesa.springboot.common.exceptions.UserNotFoundException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -18,6 +17,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+
+import static com.nicolasmesa.springboot.authentication.config.PasswordConfiguration.encodePassword;
 
 @Service
 public class UserAuthenticationServiceImpl implements UserAuthenticationService {
@@ -35,13 +36,9 @@ public class UserAuthenticationServiceImpl implements UserAuthenticationService 
         this.emailVerificationServiceImpl = emailVerificationServiceImpl;
     }
 
-    public String encodePassword(String plainPassword) {
-        return passwordEncoder.encode(plainPassword);
-    }
-
     @Override
-    public AuthResponse login(LoginCredentialsDto credentials) {
-        UserAuthentication userAuthentication = userAuthenticationRepository.findById(credentials.email()).orElseThrow(() -> new UserNotFoundException(credentials.email()));
+    public AuthResponse login(UserCredentialsDto credentials) {
+        UserAuthentication userAuthentication = userAuthenticationRepository.findById(credentials.emailAddress()).orElseThrow(() -> new UserNotFoundException(credentials.emailAddress()));
 
         if (userAuthentication.isAccountLocked()) throw new AccountLockedException();
         if (!verifyPassword(userAuthentication, credentials)) {
@@ -52,21 +49,12 @@ public class UserAuthenticationServiceImpl implements UserAuthenticationService 
         updateLastLoginAt(userAuthentication);
 
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                credentials.email(),
+                credentials.emailAddress(),
                 credentials.password()
         ));
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         return new AuthResponse(jwtTokenUtil.generateToken(authentication), "Logged in successfully");
-    }
-
-    @Override
-    public void register(LoginCredentialsDto credentials) {
-        if (userAuthenticationRepository.existsById(credentials.email()))
-            throw new UserAlreadyExistsException(credentials.email());
-
-        UserAuthentication user = new UserAuthentication(credentials.email(), encodePassword(credentials.password()));
-        userAuthenticationRepository.save(user);
     }
 
     @Override
@@ -87,12 +75,12 @@ public class UserAuthenticationServiceImpl implements UserAuthenticationService 
     }
 
     @Override
-    public void updatePasswordRequest(LoginCredentialsDto credentials) {
-        if (!userAuthenticationRepository.existsById(credentials.email()))
-            throw new UserNotFoundException(credentials.email());
+    public void updatePasswordRequest(UserCredentialsDto credentials) {
+        if (!userAuthenticationRepository.existsById(credentials.emailAddress()))
+            throw new UserNotFoundException(credentials.emailAddress());
 
-        userAuthenticationRepository.updatePassword(credentials.email(), encodePassword(credentials.password()), LocalDateTime.now());
-        userAuthenticationRepository.unlockAccount(credentials.email());
+        userAuthenticationRepository.updatePassword(credentials.emailAddress(), encodePassword(passwordEncoder, credentials.password()), LocalDateTime.now());
+        userAuthenticationRepository.unlockAccount(credentials.emailAddress());
     }
 
     @Override
@@ -101,7 +89,7 @@ public class UserAuthenticationServiceImpl implements UserAuthenticationService 
         userAuthenticationRepository.deleteById(email);
     }
 
-    private boolean verifyPassword(UserAuthentication userAuthentication, LoginCredentialsDto credentials) {
+    private boolean verifyPassword(UserAuthentication userAuthentication, UserCredentialsDto credentials) {
         return passwordEncoder.matches(credentials.password(), userAuthentication.getHashedPassword());
     }
 
@@ -113,7 +101,7 @@ public class UserAuthenticationServiceImpl implements UserAuthenticationService 
     private void increaseFailedLoginAttempt(UserAuthentication userAuthentication) {
         if (userAuthentication.getFailedLoginAttempts() == userAuthentication.MAXIMUM_LOGIN_ATTEMPTS) {
             userAuthentication.setAccountLocked(true);
-            resetPassword(userAuthentication.getEmail());
+            resetPassword(userAuthentication.getEmailAddress());
         } else {
             userAuthentication.setFailedLoginAttempts(userAuthentication.getFailedLoginAttempts() + 1);
         }

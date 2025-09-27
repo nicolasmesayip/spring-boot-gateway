@@ -3,7 +3,7 @@ package com.nicolasmesa.springboot.usermanagement.service;
 import com.nicolasmesa.springboot.common.exceptions.UnAuthorizedException;
 import com.nicolasmesa.springboot.common.exceptions.UserAlreadyExistsException;
 import com.nicolasmesa.springboot.common.exceptions.UserNotFoundException;
-import com.nicolasmesa.springboot.usermanagement.entity.User;
+import com.nicolasmesa.springboot.usermanagement.entity.UserAccountDetails;
 import com.nicolasmesa.springboot.usermanagement.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
@@ -11,7 +11,6 @@ import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
-
     private final UserRepository userRepository;
 
     public UserServiceImpl(UserRepository userRepository) {
@@ -19,45 +18,36 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getUsers() {
+    public List<UserAccountDetails> getUsers() {
         return userRepository.findAll();
     }
 
     @Override
-    public User getUserByEmail(String email, String authenticatedUserEmail) {
+    public UserAccountDetails getUserByEmail(String email, String authenticatedUserEmail) {
         if (!email.equals(authenticatedUserEmail)) throw new UnAuthorizedException();
-        return userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException(email));
+        return userRepository.findById(email).orElseThrow(() -> new UserNotFoundException(email));
     }
 
     @Override
-    public User getUserById(Long id, String authenticatedUserEmail) {
-        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
-        if (!user.getEmailAddress().equals(authenticatedUserEmail)) throw new UnAuthorizedException();
+    public void updateUserAccountDetails(String email, UserAccountDetails updatedUserAccountDetails) {
+        UserAccountDetails userAccountDetails = userRepository.findById(email).orElseThrow(() -> new UserNotFoundException(email));
+        userAccountDetails.setEmailAddress(email);
 
-        return user;
+        userRepository.save(updatedUserAccountDetails);
     }
 
     @Override
-    public User register(User user) {
-        userRepository.findByEmail(user.getEmailAddress()).ifPresent(user1 -> {
+    public void deleteUser(String email) {
+        userRepository.findById(email).orElseThrow(() -> new UserNotFoundException(email));
+        userRepository.deleteById(email);
+    }
+
+    @Override
+    public void register(UserAccountDetails user, String authenticatedUserEmail) {
+        if (authenticatedUserEmail.isEmpty()) throw new UnAuthorizedException();
+        if (userRepository.existsById(user.getEmailAddress()))
             throw new UserAlreadyExistsException(user.getEmailAddress());
-        });
-        return userRepository.save(user);
-    }
 
-    @Override
-    public void updateUser(Long id, User updatedUser) {
-        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
-        if (!user.getEmailAddress().equals(updatedUser.getEmailAddress())) {
-            throw new IllegalArgumentException("Email cannot be changed");
-        }
-        updatedUser.setId(id);
-        userRepository.save(updatedUser);
-    }
-
-    @Override
-    public void deleteUser(Long id) {
-        userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
-        userRepository.deleteById(id);
+        userRepository.save(user);
     }
 }

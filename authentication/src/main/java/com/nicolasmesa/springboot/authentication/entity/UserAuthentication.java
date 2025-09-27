@@ -11,8 +11,8 @@ import java.time.LocalDateTime;
 public class UserAuthentication {
 
     @Id
-    @Column(nullable = false, unique = true, name = "email")
-    private String email;
+    @Column(nullable = false, unique = true, name = "emailAddress")
+    private String emailAddress;
 
     @Column(nullable = false, name = "password")
     private String hashedPassword;
@@ -38,62 +38,8 @@ public class UserAuthentication {
     }
 
     public UserAuthentication(String email, String hashedPassword) {
-        this.email = email;
+        this.emailAddress = email;
         this.hashedPassword = hashedPassword;
-    }
-
-    public UserAuthentication(String email, String hashedPassword, LocalDateTime lastLoginAt) {
-        this.email = email;
-        this.hashedPassword = hashedPassword;
-        this.lastLoginAt = lastLoginAt;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getHashedPassword() {
-        return hashedPassword;
-    }
-
-    public void setHashedPassword(String hashedPassword) {
-        this.hashedPassword = hashedPassword;
-    }
-
-    public int getFailedLoginAttempts() {
-        return failedLoginAttempts;
-    }
-
-    public void setFailedLoginAttempts(int failedLoginAttempts) {
-        this.failedLoginAttempts = failedLoginAttempts;
-    }
-
-    public boolean isAccountLocked() {
-        return accountLocked;
-    }
-
-    public void setAccountLocked(boolean accountLocked) {
-        this.accountLocked = accountLocked;
-    }
-
-    public LocalDateTime getPasswordUpdatedAt() {
-        return passwordUpdatedAt;
-    }
-
-    public void setPasswordUpdatedAt(LocalDateTime passwordUpdatedAt) {
-        this.passwordUpdatedAt = passwordUpdatedAt;
-    }
-
-    public LocalDateTime getLastLoginAt() {
-        return lastLoginAt;
-    }
-
-    public void setLastLoginAt(LocalDateTime lastLoginAt) {
-        this.lastLoginAt = lastLoginAt;
     }
 
     @PrePersist

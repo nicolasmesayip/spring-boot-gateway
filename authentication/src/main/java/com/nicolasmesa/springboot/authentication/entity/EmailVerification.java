@@ -1,9 +1,6 @@
 package com.nicolasmesa.springboot.authentication.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -32,27 +29,8 @@ public class EmailVerification {
         this.requestTimestamp = requestTimestamp;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public int getVerificationOtpCode() {
-        return verificationOtpCode;
-    }
-
-    public void setVerificationOtpCode(int verificationOtpCode) {
-        this.verificationOtpCode = verificationOtpCode;
-    }
-
-    public LocalDateTime getRequestTimestamp() {
-        return requestTimestamp;
-    }
-
-    public void setRequestTimestamp(LocalDateTime requestTimestamp) {
-        this.requestTimestamp = requestTimestamp;
+    @PrePersist
+    public void onCreate() {
+        requestTimestamp = LocalDateTime.now();
     }
 }

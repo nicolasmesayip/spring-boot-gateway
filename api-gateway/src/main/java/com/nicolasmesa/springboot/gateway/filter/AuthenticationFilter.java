@@ -59,6 +59,6 @@ public class AuthenticationFilter implements GatewayFilter {
     private void updateRequest(ServerWebExchange exchange, String token) {
         String email = jwtUtil.extractClaim(token, Claims::getSubject);
         System.out.println("Updating header: " + email);
-        exchange.getRequest().getHeaders().add("email", email);
+        exchange.getRequest().getHeaders().add("X-GATEWAY-EMAIL", email);
     }
 }

@@ -22,6 +22,11 @@ public class GlobalExceptionHandler {
         return ResponseMethods.badRequest(ex.getMessage());
     }
 
+    @ExceptionHandler(UnExpectedException.class)
+    public ResponseEntity<?> handleUnexpectedException(UnExpectedException ex) {
+        return ResponseMethods.forbidden(ex.getMessage());
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<?> handleValidation(MethodArgumentNotValidException ex) {
         List<String> errors = new ArrayList<>();

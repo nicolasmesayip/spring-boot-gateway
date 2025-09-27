@@ -5,11 +5,11 @@ import com.nicolasmesa.springboot.authentication.repository.UserAuthenticationRe
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 
-@Component
+@Service
 public class CustomUserDetailsService implements UserDetailsService {
     private final UserAuthenticationRepository userRepository;
 
@@ -20,6 +20,6 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
         UserAuthentication user = userRepository.findById(s).orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getHashedPassword(), Collections.emptyList());
+        return new org.springframework.security.core.userdetails.User(user.getEmailAddress(), user.getHashedPassword(), Collections.emptyList());
     }
 }

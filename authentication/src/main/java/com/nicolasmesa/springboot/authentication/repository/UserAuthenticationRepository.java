@@ -14,11 +14,11 @@ import java.time.LocalDateTime;
 public interface UserAuthenticationRepository extends JpaRepository<UserAuthentication, String> {
     @Modifying(clearAutomatically = true)
     @Transactional
-    @Query("Update UserAuthentication u SET u.hashedPassword =:hashedPassword,u.passwordUpdatedAt =:passwordUpdatedAt WHERE u.email =:email")
-    void updatePassword(@Param("email") String email, @Param("hashedPassword") String hashedPassword, @Param("passwordUpdatedAt") LocalDateTime passwordUpdatedAt);
+    @Query("Update UserAuthentication u SET u.hashedPassword =:hashedPassword,u.passwordUpdatedAt =:passwordUpdatedAt WHERE u.emailAddress =:emailAddress")
+    void updatePassword(@Param("emailAddress") String emailAddress, @Param("hashedPassword") String hashedPassword, @Param("passwordUpdatedAt") LocalDateTime passwordUpdatedAt);
 
     @Modifying(clearAutomatically = true)
     @Transactional
-    @Query("Update UserAuthentication u SET u.accountLocked = false, u.failedLoginAttempts = 0 WHERE u.email =:email")
-    void unlockAccount(@Param("email") String email);
+    @Query("Update UserAuthentication u SET u.accountLocked = false, u.failedLoginAttempts = 0 WHERE u.emailAddress =:emailAddress")
+    void unlockAccount(@Param("emailAddress") String emailAddress);
 }

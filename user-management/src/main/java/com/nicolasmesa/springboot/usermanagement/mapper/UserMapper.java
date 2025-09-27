@@ -1,7 +1,7 @@
 package com.nicolasmesa.springboot.usermanagement.mapper;
 
-import com.nicolasmesa.springboot.usermanagement.dto.UserDto;
-import com.nicolasmesa.springboot.usermanagement.entity.User;
+import com.nicolasmesa.springboot.usermanagement.dto.UserAccountDetailsDto;
+import com.nicolasmesa.springboot.usermanagement.entity.UserAccountDetails;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
@@ -9,7 +9,7 @@ import org.mapstruct.factory.Mappers;
 public interface UserMapper {
     UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
 
-    User toEntity(UserDto dto);
+    UserAccountDetails toEntity(UserAccountDetailsDto dto);
 
-    UserDto toDto(User entity);
+    UserAccountDetailsDto toDto(UserAccountDetails entity);
 }

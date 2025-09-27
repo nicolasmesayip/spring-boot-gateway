@@ -1,19 +1,17 @@
 package com.nicolasmesa.springboot.usermanagement.service;
 
-import com.nicolasmesa.springboot.usermanagement.entity.User;
+import com.nicolasmesa.springboot.usermanagement.entity.UserAccountDetails;
 
 import java.util.List;
 
 public interface UserService {
-    List<User> getUsers();
+    List<UserAccountDetails> getUsers();
 
-    User getUserByEmail(String email, String emailAuthenticated);
+    UserAccountDetails getUserByEmail(String email, String authenticatedUserEmail);
 
-    User getUserById(Long id, String emailAuthenticated);
+    void updateUserAccountDetails(String email, UserAccountDetails updatedUserAccountDetails);
 
-    User register(User user);
+    void deleteUser(String email);
 
-    void updateUser(Long id, User updatedUser);
-
-    void deleteUser(Long id);
+    void register(UserAccountDetails user, String authenticatedUserEmail);
 }
