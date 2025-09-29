@@ -4,7 +4,7 @@ import com.nicolasmesa.springboot.usermanagement.entity.UserAccountDetails;
 
 import java.util.List;
 
-public interface UserService {
+public interface UserAccountService {
     List<UserAccountDetails> getUsers();
 
     UserAccountDetails getUserByEmail(String email, String authenticatedUserEmail);

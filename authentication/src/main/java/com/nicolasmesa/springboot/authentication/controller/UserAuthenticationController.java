@@ -10,7 +10,7 @@ import com.nicolasmesa.springboot.authentication.service.UserAuthenticationServi
 import com.nicolasmesa.springboot.common.ResponseMethods;
 import com.nicolasmesa.springboot.common.model.ApiResponse;
 import com.nicolasmesa.springboot.usermanagement.entity.UserAccountDetails;
-import com.nicolasmesa.springboot.usermanagement.mapper.UserMapper;
+import com.nicolasmesa.springboot.usermanagement.mapper.UserAccountMapper;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.http.ResponseEntity;
@@ -22,13 +22,13 @@ public class UserAuthenticationController {
     private final UserAuthenticationService userAuthenticationService;
     private final RegistrationService registrationService;
     private final EmailVerificationMapper emailVerificationMapper;
-    private final UserMapper userAccountDetailsMapper;
+    private final UserAccountMapper userAccountDetailsMapper;
 
     public UserAuthenticationController(UserAuthenticationService userAuthenticationService, RegistrationService registrationService) {
         this.userAuthenticationService = userAuthenticationService;
         this.registrationService = registrationService;
         this.emailVerificationMapper = EmailVerificationMapper.INSTANCE;
-        this.userAccountDetailsMapper = UserMapper.INSTANCE;
+        this.userAccountDetailsMapper = UserAccountMapper.INSTANCE;
     }
 
     @PostMapping(path = "/login")

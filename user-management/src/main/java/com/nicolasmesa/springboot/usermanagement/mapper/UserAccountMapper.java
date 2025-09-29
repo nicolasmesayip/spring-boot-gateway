@@ -6,8 +6,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
 @Mapper
-public interface UserMapper {
-    UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
+public interface UserAccountMapper {
+    UserAccountMapper INSTANCE = Mappers.getMapper(UserAccountMapper.class);
 
     UserAccountDetails toEntity(UserAccountDetailsDto dto);
 
