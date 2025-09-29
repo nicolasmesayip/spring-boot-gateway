@@ -12,6 +12,4 @@ public interface UserAuthenticationService {
     AuthResponse verifyOTPCode(EmailVerification emailDetails);
 
     void updatePasswordRequest(UserCredentialsDto credentials);
-
-    void deleteAccount(String email);
 }

@@ -40,7 +40,7 @@ public class UserController {
     }
 
     @DeleteMapping(path = "/{email}")
-    public ResponseEntity<ApiResponse<UserAccountDetailsDto>> deleteUser(@RequestParam String email) {
+    public ResponseEntity<ApiResponse<UserAccountDetailsDto>> deleteUser(@PathVariable String email) {
         userService.deleteUser(email);
         return ResponseMethods.noContent();
     }

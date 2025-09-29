@@ -3,8 +3,10 @@ package com.nicolasmesa.springboot.authentication.service;
 import com.nicolasmesa.springboot.authentication.dto.UserCredentialsDto;
 import com.nicolasmesa.springboot.authentication.entity.UserAuthentication;
 import com.nicolasmesa.springboot.authentication.repository.UserAuthenticationRepository;
+import com.nicolasmesa.springboot.common.exceptions.UnAuthorizedException;
 import com.nicolasmesa.springboot.common.exceptions.UnExpectedException;
 import com.nicolasmesa.springboot.common.exceptions.UserAlreadyExistsException;
+import com.nicolasmesa.springboot.common.exceptions.UserNotFoundException;
 import com.nicolasmesa.springboot.usermanagement.entity.UserAccountDetails;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -38,7 +40,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 
         if (userAuthenticationRepository.existsById(credentials.emailAddress()))
             throw new UserAlreadyExistsException(credentials.emailAddress());
-        
+
         try {
             UserAuthentication user = new UserAuthentication(credentials.emailAddress(), encodePassword(passwordEncoder, credentials.password()));
 
@@ -51,5 +53,19 @@ public class RegistrationServiceImpl implements RegistrationService {
             userAuthenticationRepository.deleteById(credentials.emailAddress());
             throw new UnExpectedException("Rolling back User Registry: " + e.getMessage());
         }
+    }
+
+    @Override
+    public void deleteAccount(UserCredentialsDto credentials) {
+        UserAuthentication userAuthentication = userAuthenticationRepository.findById(credentials.emailAddress()).orElseThrow(() -> new UserNotFoundException(credentials.emailAddress()));
+
+        if (!verifyPassword(userAuthentication, credentials)) throw new UnAuthorizedException();
+
+        userAuthenticationRepository.deleteById(credentials.emailAddress());
+        restTemplate.delete("http://localhost:8081/api/users/{email}", credentials.emailAddress());
+    }
+
+    private boolean verifyPassword(UserAuthentication userAuthentication, UserCredentialsDto credentials) {
+        return passwordEncoder.matches(credentials.password(), userAuthentication.getHashedPassword());
     }
 }

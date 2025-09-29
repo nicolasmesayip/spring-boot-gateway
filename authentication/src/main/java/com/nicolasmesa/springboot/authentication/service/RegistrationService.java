@@ -5,4 +5,6 @@ import com.nicolasmesa.springboot.usermanagement.entity.UserAccountDetails;
 
 public interface RegistrationService {
     void register(UserCredentialsDto credentials, UserAccountDetails userAccountDetails);
+
+    void deleteAccount(UserCredentialsDto credentials);
 }

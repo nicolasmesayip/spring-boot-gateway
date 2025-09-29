@@ -61,8 +61,8 @@ public class UserAuthenticationController {
     }
 
     @DeleteMapping(path = "/{email}")
-    public ResponseEntity<ApiResponse<AuthResponse>> deleteAccount(@PathVariable String email) {
-        userAuthenticationService.deleteAccount(email);
+    public ResponseEntity<ApiResponse<AuthResponse>> deleteAccount(@Valid @RequestBody @NotNull UserCredentialsDto credentials) {
+        registrationService.deleteAccount(credentials);
         return ResponseMethods.noContent();
     }
 }

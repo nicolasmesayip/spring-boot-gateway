@@ -83,12 +83,6 @@ public class UserAuthenticationServiceImpl implements UserAuthenticationService 
         userAuthenticationRepository.unlockAccount(credentials.emailAddress());
     }
 
-    @Override
-    public void deleteAccount(String email) {
-        if (!userAuthenticationRepository.existsById(email)) throw new UserNotFoundException(email);
-        userAuthenticationRepository.deleteById(email);
-    }
-
     private boolean verifyPassword(UserAuthentication userAuthentication, UserCredentialsDto credentials) {
         return passwordEncoder.matches(credentials.password(), userAuthentication.getHashedPassword());
     }
