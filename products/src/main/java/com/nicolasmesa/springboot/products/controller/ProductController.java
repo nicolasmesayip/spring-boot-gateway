@@ -2,12 +2,11 @@ package com.nicolasmesa.springboot.products.controller;
 
 import com.nicolasmesa.springboot.common.ResponseMethods;
 import com.nicolasmesa.springboot.common.model.ApiResponse;
-import com.nicolasmesa.springboot.products.dto.ProductDTO;
-import com.nicolasmesa.springboot.products.entity.Product;
+import com.nicolasmesa.springboot.products.dto.ProductDto;
 import com.nicolasmesa.springboot.products.mapper.ProductMapper;
-import com.nicolasmesa.springboot.products.repository.ProductRepository;
+import com.nicolasmesa.springboot.products.service.ProductService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -19,82 +18,69 @@ import java.util.List;
 @Validated
 public class ProductController {
 
-    @Autowired
-    private ProductRepository productRepository;
+    private final ProductService productService;
+    private final ProductMapper productMapper;
+
+    public ProductController(ProductService productService, ProductMapper productMapper) {
+        this.productService = productService;
+        this.productMapper = productMapper;
+    }
 
     @GetMapping(path = "/")
-    public ResponseEntity<ApiResponse<List<ProductDTO>>> getAllProducts() {
-        List<Product> products = productRepository.findAll();
-        return ResponseMethods.ok(ProductMapper.convertToDTOList(products));
+    public ResponseEntity<ApiResponse<List<ProductDto>>> getAllProducts() {
+        return ResponseMethods.ok(productMapper.toDto(productService.getAllProducts()));
     }
 
     @GetMapping(path = "/{id}")
-    public ResponseEntity<ApiResponse<ProductDTO>> getProductById(@PathVariable long id) {
-        return productRepository.findById(id)
-                .map(p -> ResponseMethods.ok(ProductMapper.convertToDTO(p)))
-                .orElse(ResponseMethods.notFound(List.of("Product not found")));
+    public ResponseEntity<ApiResponse<ProductDto>> getProductById(@NotNull @PathVariable Long id) {
+        return ResponseMethods.ok(productMapper.toDto(productService.getProductById(id)));
     }
 
     @PostMapping(path = "/")
-    public ResponseEntity<ApiResponse<ProductDTO>> createProduct(@Valid @RequestBody ProductDTO product) {
-        productRepository.save(ProductMapper.convertToEntity(product));
-        return ResponseMethods.ok(product);
+    public ResponseEntity<ApiResponse<ProductDto>> createProduct(@Valid @RequestBody ProductDto product) {
+        ProductDto dto = productMapper.toDto(productService.createProduct(productMapper.toEntity(product)));
+        return ResponseMethods.created(dto);
     }
 
     @PutMapping(path = "/{id}")
-    public ResponseEntity<ApiResponse<ProductDTO>> updateProduct(@PathVariable long id, @Valid @RequestBody ProductDTO productRequest) {
-        if (!productRepository.existsById(id)) {
-            return ResponseMethods.notFound(List.of("Product not found"));
-        }
-        Product product = ProductMapper.convertToEntity(productRequest);
-        product.setId(id);
-        productRepository.save(product);
-        return ResponseMethods.ok(productRequest);
+    public ResponseEntity<ApiResponse<Void>> updateProduct(@NotNull @PathVariable Long id, @Valid @RequestBody ProductDto productRequest) {
+        productService.updateProduct(id, productMapper.toEntity(productRequest));
+        return ResponseMethods.noContent();
     }
 
     @DeleteMapping(path = "/{id}")
-    public ResponseEntity<ApiResponse<Void>> deleteProduct(@PathVariable long id) {
-        if (!productRepository.existsById(id)) {
-            return ResponseMethods.notFound(List.of("Product not found"));
-        }
-        productRepository.deleteById(id);
+    public ResponseEntity<ApiResponse<Void>> deleteProduct(@PathVariable Long id) {
+        productService.deleteProduct(id);
         return ResponseMethods.noContent();
     }
 
     @GetMapping(path = "/with-stock")
-    public ResponseEntity<ApiResponse<List<ProductDTO>>> getProductsWithStock() {
-        List<Product> products = productRepository.findProductsWithStockAvailable();
-        return ResponseMethods.ok(ProductMapper.convertToDTOList(products));
+    public ResponseEntity<ApiResponse<List<ProductDto>>> getProductsWithStock() {
+        return ResponseMethods.ok(productMapper.toDto(productService.getProductsWithStock()));
     }
 
     @GetMapping(path = "/without-stock")
-    public ResponseEntity<ApiResponse<List<ProductDTO>>> getProductsWithoutStock() {
-        List<Product> products = productRepository.findProductsWithoutStockAvailable();
-        return ResponseMethods.ok(ProductMapper.convertToDTOList(products));
+    public ResponseEntity<ApiResponse<List<ProductDto>>> getProductsWithoutStock() {
+        return ResponseMethods.ok(productMapper.toDto(productService.getProductsWithoutStock()));
     }
 
     @GetMapping(path = "/available")
-    public ResponseEntity<ApiResponse<List<ProductDTO>>> getAvailableProducts() {
-        List<Product> products = productRepository.findAvailableProducts();
-        return ResponseMethods.ok(ProductMapper.convertToDTOList(products));
+    public ResponseEntity<ApiResponse<List<ProductDto>>> getAvailableProducts() {
+        return ResponseMethods.ok(productMapper.toDto(productService.getAvailableProducts()));
     }
 
     @GetMapping(path = "/unavailable")
-    public ResponseEntity<ApiResponse<List<ProductDTO>>> getUnavailableProducts() {
-        List<Product> products = productRepository.findUnavailableProducts();
-        return ResponseMethods.ok(ProductMapper.convertToDTOList(products));
+    public ResponseEntity<ApiResponse<List<ProductDto>>> getUnavailableProducts() {
+        return ResponseMethods.ok(productMapper.toDto(productService.getUnavailableProducts()));
     }
 
     @GetMapping(path = "/category/{category}")
-    public ResponseEntity<ApiResponse<List<ProductDTO>>> getProductsByCategory(@PathVariable String category) {
-        List<Product> products = productRepository.findProductsByCategory(category);
-        return ResponseMethods.ok(ProductMapper.convertToDTOList(products));
+    public ResponseEntity<ApiResponse<List<ProductDto>>> getProductsByCategory(@NotNull @PathVariable String category) {
+        return ResponseMethods.ok(productMapper.toDto(productService.getProductsByCategoryName(category)));
     }
 
     @GetMapping(path = "/name/{name}")
-    public ResponseEntity<ApiResponse<ProductDTO>> getProductByName(@PathVariable String name) {
-        return productRepository.findProductByName(name)
-                .map(p -> ResponseMethods.ok(ProductMapper.convertToDTO(p)))
-                .orElse(ResponseMethods.notFound(List.of("Product not found")));
+    public ResponseEntity<ApiResponse<ProductDto>> getProductByName(@NotNull @PathVariable String name) {
+        return ResponseMethods.ok(productMapper.toDto(productService.getProductByName(name)));
     }
 }

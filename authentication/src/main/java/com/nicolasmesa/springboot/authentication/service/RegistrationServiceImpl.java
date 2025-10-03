@@ -8,6 +8,7 @@ import com.nicolasmesa.springboot.common.exceptions.UnExpectedException;
 import com.nicolasmesa.springboot.common.exceptions.UserAlreadyExistsException;
 import com.nicolasmesa.springboot.common.exceptions.UserNotFoundException;
 import com.nicolasmesa.springboot.usermanagement.entity.UserAccountDetails;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -24,6 +25,9 @@ public class RegistrationServiceImpl implements RegistrationService {
     private final UserAuthenticationRepository userAuthenticationRepository;
     private final PasswordEncoder passwordEncoder;
     private final RestTemplate restTemplate;
+
+    @Value("${user-account.url}")
+    private String userAccountUrl;
 
     public RegistrationServiceImpl(UserAuthenticationRepository userAuthenticationRepository, PasswordEncoder passwordEncoder, RestTemplate restTemplate) {
         this.userAuthenticationRepository = userAuthenticationRepository;
@@ -45,11 +49,11 @@ public class RegistrationServiceImpl implements RegistrationService {
             UserAuthentication user = new UserAuthentication(credentials.emailAddress(), encodePassword(passwordEncoder, credentials.password()));
 
             userAuthenticationRepository.save(user);
-//            restTemplate.postForObject(, userAccountDetails, Void.class, internalHeader);
+
             HttpEntity<UserAccountDetails> requestEntity = new HttpEntity<>(userAccountDetails, headers);
-            restTemplate.exchange("http://localhost:8081/api/users/register", HttpMethod.POST, requestEntity, Void.class);
+            restTemplate.exchange(userAccountUrl + "/api/users/register", HttpMethod.POST, requestEntity, Void.class);
         } catch (Exception e) {
-            restTemplate.delete("http://localhost:8081/api/users/{email}", userAccountDetails.getEmailAddress());
+            restTemplate.delete(userAccountUrl + "/api/users/{email}", userAccountDetails.getEmailAddress());
             userAuthenticationRepository.deleteById(credentials.emailAddress());
             throw new UnExpectedException("Rolling back User Registry: " + e.getMessage());
         }
@@ -62,7 +66,7 @@ public class RegistrationServiceImpl implements RegistrationService {
         if (!verifyPassword(userAuthentication, credentials)) throw new UnAuthorizedException();
 
         userAuthenticationRepository.deleteById(credentials.emailAddress());
-        restTemplate.delete("http://localhost:8081/api/users/{email}", credentials.emailAddress());
+        restTemplate.delete(userAccountUrl + "/api/users/{email}", credentials.emailAddress());
     }
 
     private boolean verifyPassword(UserAuthentication userAuthentication, UserCredentialsDto credentials) {

@@ -1,36 +1,16 @@
 package com.nicolasmesa.springboot.products.mapper;
 
-import com.nicolasmesa.springboot.products.dto.ProductDTO;
+import com.nicolasmesa.springboot.products.dto.ProductDto;
 import com.nicolasmesa.springboot.products.entity.Product;
+import org.mapstruct.Mapper;
 
 import java.util.List;
 
-public class ProductMapper {
-    public static Product convertToEntity(ProductDTO product) {
-        return new Product(
-                product.getName(),
-                product.getDescription(),
-                product.getCategory(),
-                product.getPrice(),
-                product.getCurrency(),
-                product.getStockAvailable(),
-                product.isAvailable()
-        );
-    }
+@Mapper(componentModel = "spring", uses = AbstractCategoryMapper.class)
+public interface ProductMapper {
+    Product toEntity(ProductDto dto);
 
-    public static ProductDTO convertToDTO(Product product) {
-        ProductDTO productDTO = new ProductDTO();
-        productDTO.setName(product.getName());
-        productDTO.setDescription(product.getDescription());
-        productDTO.setCategory(product.getCategory());
-        productDTO.setPrice(product.getPrice());
-        productDTO.setCurrency(product.getCurrency());
-        productDTO.setStockAvailable(product.getStockAvailable());
-        productDTO.setAvailable(product.isAvailable());
-        return productDTO;
-    }
+    ProductDto toDto(Product entity);
 
-    public static List<ProductDTO> convertToDTOList(List<Product> products) {
-        return products.stream().map(ProductMapper::convertToDTO).toList();
-    }
+    List<ProductDto> toDto(List<Product> entity);
 }

@@ -4,47 +4,37 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
-@Entity
 @Data
-@Table(name = "tb_product")
-public class Product {
+@Entity
+@Table(name = "product_categories")
+public class Category {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false, unique = true, length = 50)
     private String name;
+
+    @Column(nullable = false, unique = true, length = 50)
+    private String slug;
 
     @Column(nullable = false, length = 255)
     private String description;
 
-    @ManyToOne
-    @JoinColumn(name = "category_id", nullable = false)
-    private Category category;
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
+    private List<Product> products;
 
     @Column(nullable = false)
-    private Double price;
-
-    @Column(nullable = false, length = 3)
-    private String currency;
+    private Boolean isActive;
 
     @Column(nullable = false)
-    private Integer stockAvailable;
-
-    @Column(nullable = false)
-    private Boolean isAvailable;
-
-    @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     @Column(nullable = false)
     private LocalDateTime updatedAt;
-
-    @OneToMany(mappedBy = "product")
-    private List<DiscountedProduct> discountedProducts = new ArrayList<>();
 
     @PrePersist
     protected void onCreate() {

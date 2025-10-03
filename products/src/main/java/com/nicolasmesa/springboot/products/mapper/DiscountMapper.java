@@ -1,24 +1,12 @@
 package com.nicolasmesa.springboot.products.mapper;
 
-import com.nicolasmesa.springboot.products.dto.DiscountDTO;
+import com.nicolasmesa.springboot.products.dto.DiscountDto;
 import com.nicolasmesa.springboot.products.entity.Discount;
+import org.mapstruct.Mapper;
 
-public class DiscountMapper {
+@Mapper
+public interface DiscountMapper {
+    Discount toEntity(DiscountDto dto);
 
-    public static Discount convertToEntity(DiscountDTO discountDTO) {
-        return new Discount(
-                discountDTO.getDiscountCode(),
-                discountDTO.getDescription(),
-                discountDTO.getDiscountType(),
-                discountDTO.getDiscount(),
-                discountDTO.getCurrency(),
-                discountDTO.getMinimumPurchaseAmount(),
-                discountDTO.isActive(),
-                discountDTO.getTimesUsed(),
-                discountDTO.getMaxUses(),
-                discountDTO.isStackable(),
-                discountDTO.getStartDateTime(),
-                discountDTO.getEndDateTime()
-        );
-    }
+    DiscountDto toDto(Discount entity);
 }

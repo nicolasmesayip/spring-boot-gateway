@@ -8,7 +8,7 @@ public class DiscountUtils {
 
     public static boolean isDiscountActive(Discount discount) {
         final LocalDateTime now = LocalDateTime.now();
-        return discount.isActive() && (discount.getStartDateTime().isAfter(now) && discount.getEndDateTime().isBefore(now));
+        return discount.getIsActive() && (discount.getStartDateTime().isAfter(now) && discount.getEndDateTime().isBefore(now));
     }
 
     public static boolean isDiscountCodeValid(Discount discount) {
