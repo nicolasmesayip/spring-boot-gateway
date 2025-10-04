@@ -1,6 +1,7 @@
 package com.nicolasmesa.springboot.products.service;
 
 import com.nicolasmesa.springboot.products.entity.Category;
+import com.nicolasmesa.springboot.products.exception.CategoryNotFoundException;
 import com.nicolasmesa.springboot.products.exception.ProductAlreadyExistsException;
 import com.nicolasmesa.springboot.products.repository.CategoryRepository;
 import com.nicolasmesa.springboot.products.service.utils.SlugService;
@@ -29,7 +30,26 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    public Category updateDescription(String slug, String newDescription) {
+        Category category = categoryRepository.findBySlug(slug).orElseThrow(() -> new CategoryNotFoundException(slug));
+        category.setDescription(newDescription);
+        return categoryRepository.save(category);
+    }
+
+    @Override
+    public Category changeStatus(String slug, Boolean newStatus) {
+        Category category = categoryRepository.findBySlug(slug).orElseThrow(() -> new CategoryNotFoundException(slug));
+        category.setIsActive(newStatus);
+        return categoryRepository.save(category);
+    }
+
+    @Override
     public List<Category> getAllCategories() {
         return categoryRepository.findAll();
+    }
+
+    @Override
+    public Category getCategoryBySlug(String slug) {
+        return categoryRepository.findBySlug(slug).orElseThrow(() -> new CategoryNotFoundException(slug));
     }
 }
