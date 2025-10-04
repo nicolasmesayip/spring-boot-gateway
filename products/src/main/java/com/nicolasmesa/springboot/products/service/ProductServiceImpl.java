@@ -4,6 +4,7 @@ import com.nicolasmesa.springboot.products.entity.Product;
 import com.nicolasmesa.springboot.products.exception.ProductAlreadyExistsException;
 import com.nicolasmesa.springboot.products.exception.ProductNotFoundException;
 import com.nicolasmesa.springboot.products.repository.ProductRepository;
+import com.nicolasmesa.springboot.products.service.utils.SlugService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,9 +12,11 @@ import java.util.List;
 @Service
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
+    private final SlugService slugService;
 
-    public ProductServiceImpl(ProductRepository productRepository) {
+    public ProductServiceImpl(ProductRepository productRepository, SlugService slugService) {
         this.productRepository = productRepository;
+        this.slugService = slugService;
     }
 
     @Override
@@ -22,32 +25,30 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product getProductById(Long id) {
-        return productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException(id));
-    }
-
-    @Override
-    public Product getProductByName(String productName) {
-        return productRepository.findProductByName(productName).orElseThrow(() -> new ProductNotFoundException(productName));
+    public Product getProductBySlug(String productName) {
+        return productRepository.findBySlug(productName).orElseThrow(() -> new ProductNotFoundException(productName));
     }
 
     @Override
     public Product createProduct(Product product) {
         if (productRepository.findProductByName(product.getName()).isPresent())
             throw new ProductAlreadyExistsException(product.getName());
+
+        product.setSlug(slugService.verifySlug(product.getName(), product.getSlug(), productRepository));
+
         return productRepository.save(product);
     }
 
     @Override
-    public void deleteProduct(Long id) {
-        if (!productRepository.existsById(id)) throw new ProductNotFoundException(id);
-        productRepository.deleteById(id);
+    public void deleteProduct(String slug) {
+        Product product = productRepository.findBySlug(slug).orElseThrow(() -> new ProductNotFoundException(slug));
+        productRepository.deleteById(product.getId());
     }
 
     @Override
-    public void updateProduct(Long id, Product product) {
-        productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException(id));
-        product.setId(id);
+    public void updateProduct(String slug, Product product) {
+        Product p = productRepository.findBySlug(slug).orElseThrow(() -> new ProductNotFoundException(slug));
+        product.setId(p.getId());
         productRepository.save(product);
     }
 

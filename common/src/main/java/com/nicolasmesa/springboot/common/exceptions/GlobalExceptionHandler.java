@@ -18,8 +18,18 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<?> handleUserNotFound(IllegalArgumentException ex) {
+    public ResponseEntity<?> handleIllegalArgument(IllegalArgumentException ex) {
         return ResponseMethods.badRequest(ex.getMessage());
+    }
+
+    @ExceptionHandler(InvalidSlugException.class)
+    public ResponseEntity<?> handleInvalidSlug(InvalidSlugException ex) {
+        return ResponseMethods.badRequest(ex.getMessage());
+    }
+
+    @ExceptionHandler(SlugAlreadyExistsException.class)
+    public ResponseEntity<?> handleInvalidSlug(SlugAlreadyExistsException ex) {
+        return ResponseMethods.conflict(ex.getMessage());
     }
 
     @ExceptionHandler(UnExpectedException.class)

@@ -1,5 +1,6 @@
 package com.nicolasmesa.springboot.products.dto;
 
+import com.nicolasmesa.springboot.common.validator.ValidSlug;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -9,7 +10,7 @@ public record CategoryDto(
         @Size(max = 50, message = "The Category name must be between 1 and 50 characters.")
         String name,
 
-        @NotBlank(message = "The Category slug is required")
+        @ValidSlug
         @Size(max = 50, message = "The Category slug must be between 1 and 50 characters.")
         String slug,
 

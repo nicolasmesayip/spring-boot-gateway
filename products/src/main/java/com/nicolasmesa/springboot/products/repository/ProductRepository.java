@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface ProductRepository extends JpaRepository<Product, Long> {
+public interface ProductRepository extends JpaRepository<Product, Long>, SlugRepository {
     @Query("SELECT p FROM Product p WHERE p.stockAvailable = 0")
     List<Product> findProductsWithoutStockAvailable();
 
@@ -27,4 +27,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     @Query("SELECT p FROM Product p WHERE p.name = :name")
     Optional<Product> findProductByName(String name);
+
+    Optional<Product> findBySlug(String slug);
 }

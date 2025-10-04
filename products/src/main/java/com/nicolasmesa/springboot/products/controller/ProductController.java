@@ -31,26 +31,21 @@ public class ProductController {
         return ResponseMethods.ok(productMapper.toDto(productService.getAllProducts()));
     }
 
-    @GetMapping(path = "/{id}")
-    public ResponseEntity<ApiResponse<ProductDto>> getProductById(@NotNull @PathVariable Long id) {
-        return ResponseMethods.ok(productMapper.toDto(productService.getProductById(id)));
-    }
-
     @PostMapping(path = "/")
     public ResponseEntity<ApiResponse<ProductDto>> createProduct(@Valid @RequestBody ProductDto product) {
         ProductDto dto = productMapper.toDto(productService.createProduct(productMapper.toEntity(product)));
         return ResponseMethods.created(dto);
     }
 
-    @PutMapping(path = "/{id}")
-    public ResponseEntity<ApiResponse<Void>> updateProduct(@NotNull @PathVariable Long id, @Valid @RequestBody ProductDto productRequest) {
-        productService.updateProduct(id, productMapper.toEntity(productRequest));
+    @PutMapping(path = "/{slug}")
+    public ResponseEntity<ApiResponse<Void>> updateProduct(@NotNull @PathVariable String slug, @Valid @RequestBody ProductDto productRequest) {
+        productService.updateProduct(slug, productMapper.toEntity(productRequest));
         return ResponseMethods.noContent();
     }
 
-    @DeleteMapping(path = "/{id}")
-    public ResponseEntity<ApiResponse<Void>> deleteProduct(@PathVariable Long id) {
-        productService.deleteProduct(id);
+    @DeleteMapping(path = "/{slug}")
+    public ResponseEntity<ApiResponse<Void>> deleteProduct(@NotNull @PathVariable String slug) {
+        productService.deleteProduct(slug);
         return ResponseMethods.noContent();
     }
 
@@ -79,8 +74,8 @@ public class ProductController {
         return ResponseMethods.ok(productMapper.toDto(productService.getProductsByCategoryName(category)));
     }
 
-    @GetMapping(path = "/name/{name}")
-    public ResponseEntity<ApiResponse<ProductDto>> getProductByName(@NotNull @PathVariable String name) {
-        return ResponseMethods.ok(productMapper.toDto(productService.getProductByName(name)));
+    @GetMapping(path = "/{slug}")
+    public ResponseEntity<ApiResponse<ProductDto>> getProductBySlug(@NotNull @PathVariable String slug) {
+        return ResponseMethods.ok(productMapper.toDto(productService.getProductBySlug(slug)));
     }
 }
