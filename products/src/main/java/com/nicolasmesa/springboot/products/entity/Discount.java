@@ -1,5 +1,6 @@
 package com.nicolasmesa.springboot.products.entity;
 
+import com.nicolasmesa.springboot.common.model.Currency;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -12,20 +13,22 @@ import java.util.List;
 @Table(name = "tb_discounts")
 public class Discount {
     @Id
-    @Column(unique = true, nullable = false, length = 50)
+    @Column(unique = true, nullable = false, updatable = false, length = 20)
     private String discountCode;
 
     @Column(nullable = false, length = 255)
     private String description;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private DiscountTypes discountType;
 
     @Column(nullable = false)
     private Double discount;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 3)
-    private String currency;
+    private Currency currency;
 
     @Column(nullable = false)
     private Double minimumPurchaseAmount;

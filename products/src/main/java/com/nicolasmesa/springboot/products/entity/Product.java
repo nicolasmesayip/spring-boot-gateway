@@ -1,5 +1,6 @@
 package com.nicolasmesa.springboot.products.entity;
 
+import com.nicolasmesa.springboot.common.model.Currency;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -31,8 +32,9 @@ public class Product {
     @Column(nullable = false)
     private Double price;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 3)
-    private String currency;
+    private Currency currency;
 
     @Column(nullable = false)
     private Integer stockAvailable;

@@ -2,6 +2,7 @@ package com.nicolasmesa.springboot.common.exceptions;
 
 import com.nicolasmesa.springboot.common.ResponseMethods;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -42,5 +43,10 @@ public class GlobalExceptionHandler {
         List<String> errors = new ArrayList<>();
         ex.getBindingResult().getFieldErrors().forEach(error -> errors.add(error.getDefaultMessage()));
         return ResponseMethods.badRequest(errors);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<?> handleEnumParseException(HttpMessageNotReadableException ex) {
+        return ResponseMethods.badRequest("Invalid value provided for enum field: ");
     }
 }

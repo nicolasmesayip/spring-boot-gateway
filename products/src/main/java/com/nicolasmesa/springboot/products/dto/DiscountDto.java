@@ -1,5 +1,6 @@
 package com.nicolasmesa.springboot.products.dto;
 
+import com.nicolasmesa.springboot.common.model.Currency;
 import com.nicolasmesa.springboot.products.entity.DiscountTypes;
 import jakarta.validation.constraints.*;
 
@@ -8,7 +9,7 @@ import java.time.LocalDateTime;
 public record DiscountDto(
 
         @NotBlank(message = "Discount code is required")
-        @Size(max = 50, message = "Discount code must be between 1 - 50 characters")
+        @Pattern(regexp = "^[A-Z0-9]{6,12}$", message = "Discount code must be 6-20 characters, uppercase letters and digits only")
         String discountCode,
 
         @NotBlank(message = "Description is required")
@@ -23,8 +24,7 @@ public record DiscountDto(
         Double discount,
 
         @NotBlank(message = "Currency is required")
-        @Size(min = 3, max = 3, message = "Currency must be 3 characters")
-        String currency,
+        Currency currency,
 
         @Positive(message = "Minimum Purchase Amount must be a positive value")
         Double minimumPurchaseAmount,
@@ -43,6 +43,10 @@ public record DiscountDto(
         LocalDateTime startDateTime,
 
         @Future(message = "The End Date Time must be in the Future")
-        LocalDateTime endDateTime
+        LocalDateTime endDateTime,
+
+        @NotNull(message = "Creation/Update User is required")
+        @Size(max = 50, message = "Creation/Update User must be between 1 and 50 characters")
+        String user
 ) {
 }

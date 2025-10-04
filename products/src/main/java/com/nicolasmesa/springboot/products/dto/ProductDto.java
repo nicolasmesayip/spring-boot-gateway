@@ -1,5 +1,6 @@
 package com.nicolasmesa.springboot.products.dto;
 
+import com.nicolasmesa.springboot.common.model.Currency;
 import com.nicolasmesa.springboot.common.validator.ValidSlug;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -27,15 +28,14 @@ public record ProductDto(
         @Min(value = 0, message = "Price cannot be negative.")
         Double price,
 
-        @NotBlank(message = "Currency is required")
-        @Size(max = 50, message = "Currency must be 3 characters")
-        String currency,
+        @NotNull(message = "Currency is required")
+        Currency currency,
 
-        @NotNull
+        @NotNull(message = "Stock Available is required")
         @Min(value = 0, message = "Stock Available cannot be negative.")
         Integer stockAvailable,
 
-        @NotNull
+        @NotNull(message = "Is Available is required")
         Boolean isAvailable
 ) {
 }
