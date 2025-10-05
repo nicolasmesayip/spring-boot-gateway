@@ -13,6 +13,9 @@ import java.util.List;
 @Table(name = "tb_discounts")
 public class Discount {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     @Column(unique = true, nullable = false, updatable = false, length = 20)
     private String discountCode;
 
