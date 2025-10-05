@@ -1,0 +1,22 @@
+package com.nicolasmesa.springboot.productservices.discounts.entity;
+
+import com.nicolasmesa.springboot.productservices.products.entity.Product;
+import jakarta.persistence.*;
+import lombok.Data;
+
+@Entity
+@Data
+@Table(name = "tb_discounted_products")
+public class DiscountedProduct {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "discount_id", nullable = false)
+    private Discount discount;
+
+    @ManyToOne
+    @JoinColumn(name = "product_id", nullable = false)
+    private Product product;
+}
