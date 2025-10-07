@@ -10,7 +10,6 @@ import java.util.List;
 
 @Service
 public class DiscountServiceImpl implements DiscountService {
-
     private final DiscountRepository discountRepository;
 
     public DiscountServiceImpl(DiscountRepository discountRepository) {

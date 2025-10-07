@@ -1,6 +1,5 @@
 package com.nicolasmesa.springboot.productservices.discounts.entity;
 
-import com.nicolasmesa.springboot.productservices.products.entity.Product;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -16,7 +15,14 @@ public class DiscountedProduct {
     @JoinColumn(name = "discount_id", nullable = false)
     private Discount discount;
 
-    @ManyToOne
-    @JoinColumn(name = "product_id", nullable = false)
-    private Product product;
+    @Column(name = "product_slug", nullable = false)
+    private String productSlug;
+
+    protected DiscountedProduct() {
+    }
+
+    public DiscountedProduct(Discount discount, String productSlug) {
+        this.discount = discount;
+        this.productSlug = productSlug;
+    }
 }

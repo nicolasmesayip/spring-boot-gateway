@@ -24,4 +24,6 @@ public interface ProductService {
     List<Product> getUnavailableProducts();
 
     List<Product> getProductsByCategoryName(String categoryName);
+
+    Boolean existsBySlug(String slug);
 }

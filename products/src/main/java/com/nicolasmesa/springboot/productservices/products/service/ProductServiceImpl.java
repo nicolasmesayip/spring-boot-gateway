@@ -76,4 +76,9 @@ public class ProductServiceImpl implements ProductService {
     public List<Product> getProductsByCategoryName(String categoryName) {
         return productRepository.findProductsByCategoryName(categoryName);
     }
+
+    @Override
+    public Boolean existsBySlug(String slug) {
+        return productRepository.existsBySlug(slug);
+    }
 }

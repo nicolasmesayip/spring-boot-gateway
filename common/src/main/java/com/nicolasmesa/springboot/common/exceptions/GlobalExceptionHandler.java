@@ -47,6 +47,6 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<?> handleEnumParseException(HttpMessageNotReadableException ex) {
-        return ResponseMethods.badRequest("Invalid value provided for enum field: ");
+        return ResponseMethods.badRequest("Invalid value provided for enum field: " + ex.getMessage());
     }
 }

@@ -23,7 +23,7 @@ public record DiscountDto(
         @Positive(message = "Discount quantity/percentage must be a positive value")
         Double discount,
 
-        @NotBlank(message = "Currency is required")
+        @NotNull(message = "Currency is required")
         Currency currency,
 
         @Positive(message = "Minimum Purchase Amount must be a positive value")
@@ -45,8 +45,11 @@ public record DiscountDto(
         @Future(message = "The End Date Time must be in the Future")
         LocalDateTime endDateTime,
 
-        @NotNull(message = "Creation/Update User is required")
-        @Size(max = 50, message = "Creation/Update User must be between 1 and 50 characters")
-        String user
+        @NotNull(message = "Update User is required")
+        @Size(max = 50, message = "Update User must be between 1 and 50 characters")
+        String updatedBy,
+
+        @Size(max = 50, message = "Creation User must be between 1 and 50 characters")
+        String createdBy
 ) {
 }

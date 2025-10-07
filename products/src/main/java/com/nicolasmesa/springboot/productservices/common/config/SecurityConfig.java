@@ -1,4 +1,4 @@
-package com.nicolasmesa.springboot.productservices.products.config;
+package com.nicolasmesa.springboot.productservices.common.config;
 
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -20,6 +20,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests((authorize) -> {
                     authorize.requestMatchers("/api/products/**").permitAll();
                     authorize.requestMatchers("/api/categories/**").permitAll();
+                    authorize.requestMatchers("/api/discounts/**").permitAll();
                 }).httpBasic(Customizer.withDefaults());
         return http.build();
     }

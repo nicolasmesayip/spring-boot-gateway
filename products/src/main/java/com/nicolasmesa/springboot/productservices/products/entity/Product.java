@@ -2,13 +2,10 @@ package com.nicolasmesa.springboot.productservices.products.entity;
 
 import com.nicolasmesa.springboot.common.model.Currency;
 import com.nicolasmesa.springboot.productservices.categories.entity.Category;
-import com.nicolasmesa.springboot.productservices.discounts.entity.DiscountedProduct;
 import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Data
@@ -49,9 +46,6 @@ public class Product {
 
     @Column(nullable = false)
     private LocalDateTime updatedAt;
-
-    @OneToMany(mappedBy = "product")
-    private List<DiscountedProduct> discountedProducts = new ArrayList<>();
 
     @PrePersist
     protected void onCreate() {

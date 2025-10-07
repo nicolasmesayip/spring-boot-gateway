@@ -78,4 +78,9 @@ public class ProductController {
     public ResponseEntity<ApiResponse<ProductDto>> getProductBySlug(@NotNull @PathVariable String slug) {
         return ResponseMethods.ok(productMapper.toDto(productService.getProductBySlug(slug)));
     }
+
+    @GetMapping(path = "/{slug}/exists")
+    public Boolean existsBySlug(@NotNull @PathVariable String slug) {
+        return productService.existsBySlug(slug);
+    }
 }
