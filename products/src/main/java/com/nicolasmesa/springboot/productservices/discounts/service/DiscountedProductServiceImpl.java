@@ -33,6 +33,13 @@ public class DiscountedProductServiceImpl implements DiscountedProductService {
     }
 
     @Override
+    public List<DiscountedProduct> getDiscountedProducts(String discountCode) {
+        Discount discount = discountRepository.findByDiscountCode(discountCode).orElseThrow(() -> new DiscountNotFoundException(discountCode));
+
+        return discountedProductRepository.findAllByDiscount(discount);
+    }
+
+    @Override
     public void removeDiscountToProducts(String discountCode, List<String> productSlugs) {
         Discount discount = discountRepository.findByDiscountCode(discountCode).orElseThrow(() -> new DiscountNotFoundException(discountCode));
 

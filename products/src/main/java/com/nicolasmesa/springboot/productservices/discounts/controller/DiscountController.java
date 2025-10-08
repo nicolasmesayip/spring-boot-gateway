@@ -74,4 +74,10 @@ public class DiscountController {
         return ResponseMethods.noContent();
     }
 
+    @GetMapping(path = "/{discountCode}/products")
+    public ResponseEntity<ApiResponse<List<String>>> getDiscountedProducts(@NotNull @PathVariable String discountCode) {
+        List<String> slugs = discountedProductService.getDiscountedProducts(discountCode).stream().map(DiscountedProduct::getProductSlug).toList();
+        return ResponseMethods.ok(slugs);
+    }
+
 }

@@ -10,4 +10,6 @@ public interface DiscountedProductRepository extends JpaRepository<DiscountedPro
     Boolean existsByDiscountAndProductSlug(Discount discount, String productSlug);
 
     List<DiscountedProduct> findAllByDiscountAndProductSlugIn(Discount discount, List<String> productSlugs);
+
+    List<DiscountedProduct> findAllByDiscount(Discount discount);
 }

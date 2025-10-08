@@ -5,7 +5,9 @@ import com.nicolasmesa.springboot.productservices.discounts.entity.DiscountedPro
 import java.util.List;
 
 public interface DiscountedProductService {
-    List<DiscountedProduct> addDiscountToProducts(String discountId, List<String> productIds);
+    List<DiscountedProduct> addDiscountToProducts(String discountCode, List<String> productSlugs);
+
+    List<DiscountedProduct> getDiscountedProducts(String discountCode);
 
     void removeDiscountToProducts(String discountId, List<String> productIds);
 }
