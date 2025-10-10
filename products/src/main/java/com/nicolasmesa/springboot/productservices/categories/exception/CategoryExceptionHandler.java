@@ -13,4 +13,9 @@ public class CategoryExceptionHandler extends GlobalExceptionHandler {
     public ResponseEntity<ApiResponse<Object>> handleCategoryNotFound(CategoryNotFoundException ex) {
         return ResponseMethods.badRequest(String.valueOf(ex.getMessage()));
     }
+
+    @ExceptionHandler(CategoryAlreadyExistsException.class)
+    public ResponseEntity<ApiResponse<Object>> handleCategoryAlreadyExists(CategoryAlreadyExistsException ex) {
+        return ResponseMethods.conflict(String.valueOf(ex.getMessage()));
+    }
 }

@@ -1,10 +1,10 @@
 package com.nicolasmesa.springboot.productservices.categories.service;
 
 import com.nicolasmesa.springboot.productservices.categories.entity.Category;
+import com.nicolasmesa.springboot.productservices.categories.exception.CategoryAlreadyExistsException;
 import com.nicolasmesa.springboot.productservices.categories.exception.CategoryNotFoundException;
 import com.nicolasmesa.springboot.productservices.categories.repository.CategoryRepository;
 import com.nicolasmesa.springboot.productservices.common.service.SlugService;
-import com.nicolasmesa.springboot.productservices.products.exception.ProductAlreadyExistsException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,7 +22,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public Category createCategory(Category category) {
         if (categoryRepository.findByName(category.getName()).isPresent())
-            throw new ProductAlreadyExistsException(category.getName());
+            throw new CategoryAlreadyExistsException(category.getName());
 
         category.setSlug(slugService.verifySlug(category.getName(), category.getSlug(), categoryRepository));
 
