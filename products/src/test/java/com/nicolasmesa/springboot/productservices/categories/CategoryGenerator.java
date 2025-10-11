@@ -12,7 +12,9 @@ public class CategoryGenerator extends Generators {
 
     @Provide
     Arbitrary<CategoryDto> genCategoryDto() {
-        return Combinators.combine(genStringLengthBetween1To50, genStringLengthBetween1To50, genStringLengthBetween1To255, genBoolean).as(CategoryDto::new);
+        Arbitrary<String> slug = genStringLengthBetween1To50.map(String::toLowerCase);
+
+        return Combinators.combine(genStringLengthBetween1To50, slug, genStringLengthBetween1To255, genBoolean).as(CategoryDto::new);
     }
 
     @Provide
