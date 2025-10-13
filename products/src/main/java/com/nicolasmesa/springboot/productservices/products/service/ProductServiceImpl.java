@@ -31,7 +31,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product createProduct(Product product) {
-        if (productRepository.findProductByName(product.getName()).isPresent())
+        if (productRepository.findByName(product.getName()).isPresent())
             throw new ProductAlreadyExistsException(product.getName());
 
         product.setSlug(slugService.verifySlug(product.getName(), product.getSlug(), productRepository));
@@ -54,27 +54,27 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<Product> getProductsWithStock() {
-        return productRepository.findProductsWithStockAvailable();
+        return productRepository.findByStockAvailableGreaterThan(0);
     }
 
     @Override
     public List<Product> getProductsWithoutStock() {
-        return productRepository.findProductsWithoutStockAvailable();
+        return productRepository.findByStockAvailableEquals(0);
     }
 
     @Override
     public List<Product> getAvailableProducts() {
-        return productRepository.findAvailableProducts();
+        return productRepository.findByIsAvailableTrue();
     }
 
     @Override
     public List<Product> getUnavailableProducts() {
-        return productRepository.findUnavailableProducts();
+        return productRepository.findByIsAvailableFalse();
     }
 
     @Override
     public List<Product> getProductsByCategoryName(String categoryName) {
-        return productRepository.findProductsByCategoryName(categoryName);
+        return productRepository.findByCategoryName(categoryName);
     }
 
     @Override

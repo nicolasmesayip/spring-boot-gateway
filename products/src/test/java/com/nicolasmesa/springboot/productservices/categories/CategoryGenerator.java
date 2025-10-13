@@ -19,12 +19,12 @@ public class CategoryGenerator extends Generators {
 
     @Provide
     Arbitrary<Category> genCategory() {
-        return Combinators.combine(genStringLengthBetween1To50, SlugGenerator.genSlug(), genStringLengthBetween1To255, genBoolean).as((name, slug, desc, isActive) -> {
+        return genCategoryDto().map(dto -> {
             Category category = new Category();
-            category.setName(name);
-            category.setSlug(slug);
-            category.setDescription(desc);
-            category.setIsActive(isActive);
+            category.setName(dto.name());
+            category.setSlug(dto.slug());
+            category.setDescription(dto.description());
+            category.setIsActive(dto.isActive());
             return category;
         });
     }

@@ -1,5 +1,6 @@
 package com.nicolasmesa.springboot.productservices.common;
 
+import com.nicolasmesa.springboot.common.model.Currency;
 import net.jqwik.api.Arbitraries;
 import net.jqwik.api.Arbitrary;
 
@@ -12,5 +13,9 @@ public class Generators {
     public static Arbitrary<Boolean> genBoolean = Arbitraries.of(true, false);
 
     public static Arbitrary<Integer> genInteger = Arbitraries.integers().between(0, 10);
+    public static Arbitrary<Double> genPositiveDouble = Arbitraries.doubles().greaterOrEqual(0.0);
+    public static Arbitrary<Integer> genPositiveInteger = Arbitraries.integers().greaterOrEqual(0);
+
+    public static Arbitrary<Currency> genCurrency = Arbitraries.of(Currency.class);
 
 }
