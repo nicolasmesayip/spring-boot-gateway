@@ -164,7 +164,7 @@ public class ProductServiceTest extends ProductGenerator {
         productsWithoutStock.forEach(x -> x.setStockAvailable(0));
 
         Mockito.when(productRepository.findByStockAvailableEquals(0)).thenReturn(productsWithoutStock);
-        List<Product> results = productService.getProductsWithStock();
+        List<Product> results = productService.getProductsWithoutStock();
 
         for (int i = 0; i < results.size(); i++) {
             verifyProduct(productsWithoutStock.get(i), results.get(i));
@@ -176,7 +176,7 @@ public class ProductServiceTest extends ProductGenerator {
         availableProducts.forEach(x -> x.setIsAvailable(true));
 
         Mockito.when(productRepository.findByIsAvailableTrue()).thenReturn(availableProducts);
-        List<Product> results = productService.getProductsWithStock();
+        List<Product> results = productService.getAvailableProducts();
 
         for (int i = 0; i < results.size(); i++) {
             verifyProduct(availableProducts.get(i), results.get(i));
@@ -188,10 +188,24 @@ public class ProductServiceTest extends ProductGenerator {
         unavailableProducts.forEach(x -> x.setIsAvailable(false));
 
         Mockito.when(productRepository.findByIsAvailableFalse()).thenReturn(unavailableProducts);
-        List<Product> results = productService.getProductsWithStock();
+        List<Product> results = productService.getUnavailableProducts();
 
         for (int i = 0; i < results.size(); i++) {
             verifyProduct(unavailableProducts.get(i), results.get(i));
+        }
+    }
+
+    @Property
+    public void getProductsByCategorySlug(@ForAll("genListOfProducts") List<Product> products) {
+        String categorySlug = "electronics";
+        products.forEach(x -> x.setCategorySlug(categorySlug));
+
+        Mockito.when(productRepository.findByCategorySlug(categorySlug)).thenReturn(products);
+        List<Product> results = productService.getProductsByCategorySlug(categorySlug);
+
+        for (int i = 0; i < results.size(); i++) {
+            assertEquals(categorySlug, results.get(i).getCategorySlug());
+            verifyProduct(products.get(i), results.get(i));
         }
     }
 
@@ -209,7 +223,7 @@ public class ProductServiceTest extends ProductGenerator {
         assertEquals(expected.getName(), result.getName());
         assertEquals(expected.getSlug(), result.getSlug());
         assertEquals(expected.getDescription(), result.getDescription());
-        assertEquals(expected.getCategory(), result.getCategory());
+        assertEquals(expected.getCategorySlug(), result.getCategorySlug());
         assertEquals(expected.getIsAvailable(), result.getIsAvailable());
         assertEquals(expected.getCurrency(), result.getCurrency());
         assertEquals(expected.getStockAvailable(), result.getStockAvailable());

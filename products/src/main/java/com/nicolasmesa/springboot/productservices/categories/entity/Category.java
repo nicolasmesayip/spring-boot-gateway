@@ -1,11 +1,9 @@
 package com.nicolasmesa.springboot.productservices.categories.entity;
 
-import com.nicolasmesa.springboot.productservices.products.entity.Product;
 import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Data
 @Entity
@@ -24,9 +22,6 @@ public class Category {
 
     @Column(nullable = false, length = 255)
     private String description;
-
-    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
-    private List<Product> products;
 
     @Column(nullable = false)
     private Boolean isActive;

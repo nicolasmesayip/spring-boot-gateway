@@ -1,7 +1,6 @@
 package com.nicolasmesa.springboot.productservices.products.entity;
 
 import com.nicolasmesa.springboot.common.model.Currency;
-import com.nicolasmesa.springboot.productservices.categories.entity.Category;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -24,9 +23,8 @@ public class Product {
     @Column(nullable = false, length = 255)
     private String description;
 
-    @ManyToOne
-    @JoinColumn(name = "category_id", nullable = false)
-    private Category category;
+    @Column(name = "category_slug", nullable = false)
+    private String categorySlug;
 
     @Column(nullable = false)
     private Double price;

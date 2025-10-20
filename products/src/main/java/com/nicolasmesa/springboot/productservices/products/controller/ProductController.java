@@ -71,7 +71,7 @@ public class ProductController {
 
     @GetMapping(path = "/category/{category}")
     public ResponseEntity<ApiResponse<List<ProductDto>>> getProductsByCategory(@NotNull @PathVariable String category) {
-        return ResponseMethods.ok(productMapper.toDto(productService.getProductsByCategoryName(category)));
+        return ResponseMethods.ok(productMapper.toDto(productService.getProductsByCategorySlug(category)));
     }
 
     @GetMapping(path = "/{slug}")

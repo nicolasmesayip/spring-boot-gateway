@@ -23,7 +23,7 @@ public interface ProductService {
 
     List<Product> getUnavailableProducts();
 
-    List<Product> getProductsByCategoryName(String categoryName);
+    List<Product> getProductsByCategorySlug(String categoryName);
 
     Boolean existsBySlug(String slug);
 }

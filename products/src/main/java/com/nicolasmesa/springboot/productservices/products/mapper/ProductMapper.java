@@ -6,7 +6,7 @@ import org.mapstruct.Mapper;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring", uses = AbstractCategoryMapper.class)
+@Mapper(componentModel = "spring")
 public interface ProductMapper {
     Product toEntity(ProductDto dto);
 
