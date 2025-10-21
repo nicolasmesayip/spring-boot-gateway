@@ -22,7 +22,7 @@ public record ProductDto(
 
         @NotBlank(message = "Product category is required")
         @Size(max = 50, message = "Product category must be between 1 - 50 characters")
-        String category,
+        String categorySlug,
 
         @NotNull
         @Min(value = 0, message = "Price cannot be negative.")
