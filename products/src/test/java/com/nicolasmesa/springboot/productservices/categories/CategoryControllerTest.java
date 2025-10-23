@@ -1,6 +1,5 @@
 package com.nicolasmesa.springboot.productservices.categories;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicolasmesa.springboot.common.exceptions.InvalidSlugException;
 import com.nicolasmesa.springboot.productservices.categories.controller.CategoryController;
 import com.nicolasmesa.springboot.productservices.categories.dto.CategoryDto;
@@ -12,17 +11,15 @@ import com.nicolasmesa.springboot.productservices.categories.exception.CategoryN
 import com.nicolasmesa.springboot.productservices.categories.mapper.CategoryMapper;
 import com.nicolasmesa.springboot.productservices.categories.mapper.CategoryMapperImpl;
 import com.nicolasmesa.springboot.productservices.categories.service.CategoryService;
+import com.nicolasmesa.springboot.productservices.testcommon.RequestBuilder;
 import net.jqwik.api.ForAll;
 import net.jqwik.api.Property;
 import net.jqwik.api.lifecycle.BeforeTry;
-import org.hamcrest.Matchers;
 import org.mockito.Mockito;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -35,49 +32,35 @@ public class CategoryControllerTest extends CategoryGenerator {
     private MockMvc mockMvc;
     private CategoryMapper categoryMapper;
     private CategoryService categoryService;
-    private ObjectMapper objectMapper;
+    private CategoryControllerVerification categoryControllerVerification;
 
     @BeforeTry
     void setup() {
-        // Build the controller manually — no Spring context
         categoryService = Mockito.mock(CategoryService.class);
         categoryMapper = new CategoryMapperImpl();
         CategoryController controller = new CategoryController(categoryMapper, categoryService);
         mockMvc = MockMvcBuilders.standaloneSetup(controller).setControllerAdvice(new CategoryExceptionHandler()).build();
-        objectMapper = new ObjectMapper();
+        categoryControllerVerification = new CategoryControllerVerification();
     }
 
     @Property(tries = 5)
     public void getAllCategories(@ForAll("genListOfCategories") List<Category> listOfCategories) throws Exception {
         Mockito.when(categoryService.getAllCategories()).thenReturn(listOfCategories);
 
-        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get("/api/categories/"));
-        resultActions
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.success").value(true))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.errors").doesNotExist());
+        ResultActions resultActions = mockMvc.perform(RequestBuilder.get("/api/categories/"))
+                .andExpect(MockMvcResultMatchers.status().isOk());
 
-        for (int i = 0; i < listOfCategories.size(); i++) {
-            Category category = listOfCategories.get(i);
-
-            resultActions
-                    .andExpect(MockMvcResultMatchers.jsonPath("$.data[" + i + "].name").value(category.getName()))
-                    .andExpect(MockMvcResultMatchers.jsonPath("$.data[" + i + "].slug").value(category.getSlug()))
-                    .andExpect(MockMvcResultMatchers.jsonPath("$.data[" + i + "].description").value(category.getDescription()))
-                    .andExpect(MockMvcResultMatchers.jsonPath("$.data[" + i + "].isActive").value(category.getIsActive()));
-        }
+        categoryControllerVerification.verifyData(resultActions, listOfCategories);
     }
 
     @Property(tries = 5)
     public void getAllCategoriesWhenNoCategories() throws Exception {
         Mockito.when(categoryService.getAllCategories()).thenReturn(new ArrayList<>());
 
-        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get("/api/categories/"));
-        resultActions
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.success").value(true))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.errors").doesNotExist())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data").isEmpty());
+        ResultActions resultActions = mockMvc.perform(RequestBuilder.get("/api/categories/"))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+
+        categoryControllerVerification.verifyNoContent(resultActions);
     }
 
     @Property(tries = 5)
@@ -85,21 +68,20 @@ public class CategoryControllerTest extends CategoryGenerator {
         Category category = categoryMapper.toEntity(dto);
 
         Mockito.when(categoryService.getCategoryBySlug(dto.slug())).thenReturn(category);
-        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get("/api/categories/{slug}", dto.slug()))
+        ResultActions resultActions = mockMvc.perform(RequestBuilder.get("/api/categories/{slug}", dto.slug()))
                 .andExpect(MockMvcResultMatchers.status().isOk());
 
-        verifyCategory(resultActions, category);
+        categoryControllerVerification.verifyData(resultActions, category);
     }
 
     @Property(tries = 5)
     public void attemptCategoryBySlug(@ForAll("genCategoryDto") CategoryDto dto) throws Exception {
         Mockito.when(categoryService.getCategoryBySlug(dto.slug())).thenThrow(new CategoryNotFoundException(dto.slug()));
 
-        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get("/api/categories/{slug}", dto.slug()))
+        ResultActions resultActions = mockMvc.perform(RequestBuilder.get("/api/categories/{slug}", dto.slug()))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
-        List<String> errors = List.of("Category not found with name: " + dto.slug());
-        verifyErrors(resultActions, errors);
+        categoryControllerVerification.verifyErrors(resultActions, List.of("Category not found with name: " + dto.slug()));
     }
 
     @Property(tries = 5)
@@ -107,25 +89,20 @@ public class CategoryControllerTest extends CategoryGenerator {
         Category category = categoryMapper.toEntity(dto);
         Mockito.when(categoryService.createCategory(category)).thenReturn(category);
 
-        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.post("/api/categories/")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(dto)))
+        ResultActions resultActions = mockMvc.perform(RequestBuilder.post("/api/categories/").body(dto))
                 .andExpect(MockMvcResultMatchers.status().isCreated());
 
-        verifyCategory(resultActions, category);
+        categoryControllerVerification.verifyData(resultActions, category);
     }
 
     @Property(tries = 5)
     public void failedCreatingCategoryInvalidData(@ForAll("genCategoryDto") CategoryDto dto) throws Exception {
         CategoryDto invalidDto = new CategoryDto("", "", "", dto.isActive());
 
-        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.post("/api/categories/")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(invalidDto)))
+        ResultActions resultActions = mockMvc.perform(RequestBuilder.post("/api/categories/").body(invalidDto))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
-        List<String> errors = List.of("The Category name is required", "The Category description is required");
-        verifyErrors(resultActions, errors);
+        categoryControllerVerification.verifyErrors(resultActions, List.of("The Category name is required", "The Category description is required"));
     }
 
     @Property(tries = 5)
@@ -133,13 +110,10 @@ public class CategoryControllerTest extends CategoryGenerator {
         Category category = categoryMapper.toEntity(dto);
         Mockito.when(categoryService.createCategory(category)).thenThrow(new CategoryAlreadyExistsException(dto.slug()));
 
-        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.post("/api/categories/")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(dto)))
+        ResultActions resultActions = mockMvc.perform(RequestBuilder.post("/api/categories/").body(dto))
                 .andExpect(MockMvcResultMatchers.status().isConflict());
 
-        List<String> errors = List.of("Category already exists: " + dto.slug());
-        verifyErrors(resultActions, errors);
+        categoryControllerVerification.verifyErrors(resultActions, List.of("Category already exists: " + dto.slug()));
     }
 
     @Property(tries = 5)
@@ -149,13 +123,10 @@ public class CategoryControllerTest extends CategoryGenerator {
         Category category = categoryMapper.toEntity(invalidDto);
         Mockito.when(categoryService.createCategory(category)).thenThrow(new InvalidSlugException(dto.slug()));
 
-        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.post("/api/categories/")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(invalidDto)))
+        ResultActions resultActions = mockMvc.perform(RequestBuilder.post("/api/categories/").body(invalidDto))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
-        List<String> errors = List.of("Slug '" + invalidDto.slug() + "' is not valid. Use only lowercase letters, numbers, and hyphens.");
-        verifyErrors(resultActions, errors);
+        categoryControllerVerification.verifyErrors(resultActions, List.of("Slug '" + invalidDto.slug() + "' is not valid. Use only lowercase letters, numbers, and hyphens."));
     }
 
     @Property(tries = 5)
@@ -165,25 +136,20 @@ public class CategoryControllerTest extends CategoryGenerator {
 
         Mockito.when(categoryService.updateDescription(dto.slug(), newDescription)).thenReturn(category);
 
-        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.patch("/api/categories/description/{slug}", dto.slug())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(new UpdateCategoryDescriptionDto(newDescription))))
+        ResultActions resultActions = mockMvc.perform(RequestBuilder.patch("/api/categories/description/{slug}", dto.slug()).body(new UpdateCategoryDescriptionDto(newDescription)))
                 .andExpect(MockMvcResultMatchers.status().isOk());
 
-        verifyCategory(resultActions, category);
+        categoryControllerVerification.verifyData(resultActions, category);
     }
 
     @Property(tries = 5)
     public void failedToUpdateDescription(@ForAll("genCategoryDto") CategoryDto dto, @ForAll("genDescription") String newDescription) throws Exception {
         Mockito.when(categoryService.updateDescription(dto.slug(), newDescription)).thenThrow(new CategoryNotFoundException(dto.slug()));
 
-        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.patch("/api/categories/description/{slug}", dto.slug())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(new UpdateCategoryDescriptionDto(newDescription))))
+        ResultActions resultActions = mockMvc.perform(RequestBuilder.patch("/api/categories/description/{slug}", dto.slug()).body(new UpdateCategoryDescriptionDto(newDescription)))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
-        List<String> errors = List.of("Category not found with name: " + dto.slug());
-        verifyErrors(resultActions, errors);
+        categoryControllerVerification.verifyErrors(resultActions, List.of("Category not found with name: " + dto.slug()));
     }
 
     @Property(tries = 5)
@@ -193,21 +159,20 @@ public class CategoryControllerTest extends CategoryGenerator {
 
         Mockito.when(categoryService.changeStatus(dto.slug(), true)).thenReturn(category);
 
-        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.patch("/api/categories/activate/{slug}", dto.slug()))
+        ResultActions resultActions = mockMvc.perform(RequestBuilder.patch("/api/categories/activate/{slug}", dto.slug()))
                 .andExpect(MockMvcResultMatchers.status().isOk());
 
-        verifyCategory(resultActions, category);
+        categoryControllerVerification.verifyData(resultActions, category);
     }
 
     @Property(tries = 5)
     public void failedToActivateCategory(@ForAll("genCategoryDto") CategoryDto dto) throws Exception {
         Mockito.when(categoryService.changeStatus(dto.slug(), true)).thenThrow(new CategoryNotFoundException(dto.slug()));
 
-        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.patch("/api/categories/activate/{slug}", dto.slug()))
+        ResultActions resultActions = mockMvc.perform(RequestBuilder.patch("/api/categories/activate/{slug}", dto.slug()))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
-        List<String> errors = List.of("Category not found with name: " + dto.slug());
-        verifyErrors(resultActions, errors);
+        categoryControllerVerification.verifyErrors(resultActions, List.of("Category not found with name: " + dto.slug()));
     }
 
     @Property(tries = 5)
@@ -217,41 +182,19 @@ public class CategoryControllerTest extends CategoryGenerator {
 
         Mockito.when(categoryService.changeStatus(dto.slug(), false)).thenReturn(category);
 
-        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.patch("/api/categories/deactivate/{slug}", dto.slug()))
+        ResultActions resultActions = mockMvc.perform(RequestBuilder.patch("/api/categories/deactivate/{slug}", dto.slug()))
                 .andExpect(MockMvcResultMatchers.status().isOk());
 
-        verifyCategory(resultActions, category);
+        categoryControllerVerification.verifyData(resultActions, category);
     }
 
     @Property(tries = 5)
     public void failedToDeactivateCategory(@ForAll("genCategoryDto") CategoryDto dto) throws Exception {
         Mockito.when(categoryService.changeStatus(dto.slug(), false)).thenThrow(new CategoryNotFoundException(dto.slug()));
 
-        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.patch("/api/categories/deactivate/{slug}", dto.slug()))
+        ResultActions resultActions = mockMvc.perform(RequestBuilder.patch("/api/categories/deactivate/{slug}", dto.slug()))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
-        List<String> errors = List.of("Category not found with name: " + dto.slug());
-        verifyErrors(resultActions, errors);
-    }
-
-    public void verifyCategory(ResultActions resultActions, Category category) throws Exception {
-        resultActions
-                .andExpect(MockMvcResultMatchers.jsonPath("$.success").value(true))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.errors").doesNotExist())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data.name").value(category.getName()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data.slug").value(category.getSlug()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data.description").value(category.getDescription()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data.isActive").value(category.getIsActive()));
-    }
-
-    public void verifyErrors(ResultActions resultActions, List<String> errors) throws Exception {
-        resultActions
-                .andExpect(MockMvcResultMatchers.jsonPath("$.success").value(false))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data").isEmpty())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.errors").value(Matchers.hasSize(errors.size())));
-
-        for (String error : errors) {
-            resultActions.andExpect(MockMvcResultMatchers.jsonPath("$.errors").value(Matchers.hasItem(error)));
-        }
+        categoryControllerVerification.verifyErrors(resultActions, List.of("Category not found with name: " + dto.slug()));
     }
 }
