@@ -2,6 +2,8 @@ package com.nicolasmesa.springboot.productservices.testcommon;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.AbstractMockHttpServletRequestBuilder;
@@ -13,6 +15,8 @@ public class RequestBuilder extends AbstractMockHttpServletRequestBuilder<Reques
 
     RequestBuilder(HttpMethod httpMethod) {
         super(httpMethod);
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     }
 
     public static RequestBuilder get(String uriTemplate, Object... uriVariables) {
@@ -57,6 +61,7 @@ public class RequestBuilder extends AbstractMockHttpServletRequestBuilder<Reques
 
     public RequestBuilder body(Object body) throws JsonProcessingException {
         super.contentType(MediaType.APPLICATION_JSON);
-        return (RequestBuilder) super.content(objectMapper.writeValueAsString(body));
+        String json = objectMapper.writeValueAsString(body);
+        return (RequestBuilder) super.content(json);
     }
 }

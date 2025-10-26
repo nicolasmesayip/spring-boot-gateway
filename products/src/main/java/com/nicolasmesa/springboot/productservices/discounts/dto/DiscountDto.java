@@ -1,5 +1,6 @@
 package com.nicolasmesa.springboot.productservices.discounts.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.nicolasmesa.springboot.common.model.Currency;
 import com.nicolasmesa.springboot.productservices.discounts.entity.DiscountTypes;
 import jakarta.validation.constraints.*;
@@ -9,7 +10,7 @@ import java.time.LocalDateTime;
 public record DiscountDto(
 
         @NotBlank(message = "Discount code is required")
-        @Pattern(regexp = "^[A-Z0-9]{6,12}$", message = "Discount code must be 6-20 characters, uppercase letters and digits only")
+        @Pattern(regexp = "^[A-Z0-9]{6,12}$", message = "Discount code must be 6-12 characters, uppercase letters and digits only")
         String discountCode,
 
         @NotBlank(message = "Description is required")
@@ -40,9 +41,11 @@ public record DiscountDto(
 
         @NotNull(message = "Start Date Time is required")
         @FutureOrPresent(message = "The Start Date Time must be in Present or Future")
+        @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
         LocalDateTime startDateTime,
 
         @Future(message = "The End Date Time must be in the Future")
+        @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
         LocalDateTime endDateTime,
 
         @NotNull(message = "Update User is required")

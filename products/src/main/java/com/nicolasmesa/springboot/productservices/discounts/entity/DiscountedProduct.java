@@ -2,10 +2,12 @@ package com.nicolasmesa.springboot.productservices.discounts.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Data
 @Table(name = "tb_discounted_products")
+@NoArgsConstructor
 public class DiscountedProduct {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,9 +19,6 @@ public class DiscountedProduct {
 
     @Column(name = "product_slug", nullable = false)
     private String productSlug;
-
-    protected DiscountedProduct() {
-    }
 
     public DiscountedProduct(Discount discount, String productSlug) {
         this.discount = discount;

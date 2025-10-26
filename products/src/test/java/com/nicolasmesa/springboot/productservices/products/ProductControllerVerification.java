@@ -44,6 +44,5 @@ public class ProductControllerVerification extends VerifyResponse<Product> {
                     .andExpect(MockMvcResultMatchers.jsonPath("$.data[" + i + "].stockAvailable").value(product.getStockAvailable()))
                     .andExpect(MockMvcResultMatchers.jsonPath("$.data[" + i + "].isAvailable").value(product.getIsAvailable()));
         }
-
     }
 }

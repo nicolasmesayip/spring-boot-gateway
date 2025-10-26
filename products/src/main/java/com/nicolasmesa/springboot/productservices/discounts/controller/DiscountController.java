@@ -3,6 +3,7 @@ package com.nicolasmesa.springboot.productservices.discounts.controller;
 import com.nicolasmesa.springboot.common.ResponseMethods;
 import com.nicolasmesa.springboot.common.model.ApiResponse;
 import com.nicolasmesa.springboot.productservices.discounts.dto.DiscountDto;
+import com.nicolasmesa.springboot.productservices.discounts.entity.Discount;
 import com.nicolasmesa.springboot.productservices.discounts.entity.DiscountedProduct;
 import com.nicolasmesa.springboot.productservices.discounts.mapper.DiscountMapper;
 import com.nicolasmesa.springboot.productservices.discounts.service.DiscountService;
@@ -41,7 +42,8 @@ public class DiscountController {
 
     @PostMapping(path = "/")
     public ResponseEntity<ApiResponse<DiscountDto>> createDiscount(@Valid @NotNull @RequestBody DiscountDto discountDto) {
-        return ResponseMethods.created(discountMapper.toDto(discountService.createDiscount(discountMapper.toEntity(discountDto))));
+        Discount discount = discountService.createDiscount(discountMapper.toEntity(discountDto));
+        return ResponseMethods.created(discountMapper.toDto(discount));
     }
 
     @DeleteMapping(path = "/{discountCode}")

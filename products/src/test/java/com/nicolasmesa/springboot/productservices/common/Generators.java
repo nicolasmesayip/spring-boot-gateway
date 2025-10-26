@@ -3,6 +3,9 @@ package com.nicolasmesa.springboot.productservices.common;
 import com.nicolasmesa.springboot.common.model.Currency;
 import net.jqwik.api.Arbitraries;
 import net.jqwik.api.Arbitrary;
+import net.jqwik.time.api.DateTimes;
+
+import java.time.LocalDateTime;
 
 public class Generators {
     public static Arbitrary<String> genStringLengthBetween1To50 = Arbitraries.strings().alpha().ofMinLength(1).ofMaxLength(50);
@@ -18,4 +21,7 @@ public class Generators {
 
     public static Arbitrary<Currency> genCurrency = Arbitraries.of(Currency.class);
 
+    public static Arbitrary<LocalDateTime> genLocalDateTimeInPresentOrFuture = DateTimes.dateTimes().between(LocalDateTime.now(), LocalDateTime.now().plusYears(5));
+    public static Arbitrary<LocalDateTime> genLocalDateTimeInFuture = DateTimes.dateTimes().between(LocalDateTime.now().plusDays(1), LocalDateTime.now().plusYears(5));
+    public static Arbitrary<LocalDateTime> genLocalDateTimeInPast = DateTimes.dateTimes().between(LocalDateTime.now().minusYears(100), LocalDateTime.now().minusDays(1));
 }

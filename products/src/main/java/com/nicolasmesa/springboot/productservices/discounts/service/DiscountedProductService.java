@@ -9,5 +9,5 @@ public interface DiscountedProductService {
 
     List<DiscountedProduct> getDiscountedProducts(String discountCode);
 
-    void removeDiscountToProducts(String discountId, List<String> productIds);
+    void removeDiscountToProducts(String discountCode, List<String> productSlugs);
 }
