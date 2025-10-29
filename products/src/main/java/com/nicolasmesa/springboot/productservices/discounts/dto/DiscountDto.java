@@ -5,6 +5,7 @@ import com.nicolasmesa.springboot.common.model.Currency;
 import com.nicolasmesa.springboot.productservices.discounts.entity.DiscountTypes;
 import jakarta.validation.constraints.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public record DiscountDto(
@@ -20,15 +21,13 @@ public record DiscountDto(
         @NotNull(message = "Discount Type is required")
         DiscountTypes discountType,
 
-        @NotNull(message = "Discount quantity/percentage is required")
         @Positive(message = "Discount quantity/percentage must be a positive value")
-        Double discount,
+        BigDecimal discount,
 
-        @NotNull(message = "Currency is required")
         Currency currency,
 
         @Positive(message = "Minimum Purchase Amount must be a positive value")
-        Double minimumPurchaseAmount,
+        BigDecimal minimumPurchaseAmount,
 
         @NotNull(message = "IsActive is required")
         Boolean isActive,

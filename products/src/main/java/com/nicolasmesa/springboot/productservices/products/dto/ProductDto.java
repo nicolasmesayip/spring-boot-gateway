@@ -7,6 +7,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
+import java.math.BigDecimal;
+
 public record ProductDto(
         @NotBlank(message = "Product name is required")
         @Size(max = 50, message = "Product name must be between 1 - 50 characters")
@@ -26,7 +28,7 @@ public record ProductDto(
 
         @NotNull
         @Min(value = 0, message = "Price cannot be negative.")
-        Double price,
+        BigDecimal price,
 
         @NotNull(message = "Currency is required")
         Currency currency,

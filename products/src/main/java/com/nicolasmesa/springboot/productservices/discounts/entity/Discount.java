@@ -4,13 +4,14 @@ import com.nicolasmesa.springboot.common.model.Currency;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Data
 @Entity
-@Table(name = "tb_discounts")
+@Table(name = "tb_discount")
 public class Discount {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,15 +27,15 @@ public class Discount {
     @Column(nullable = false)
     private DiscountTypes discountType;
 
-    @Column(nullable = false)
-    private Double discount;
+    @Column
+    private BigDecimal discount;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 3)
+    @Column(length = 3)
     private Currency currency;
 
     @Column(nullable = false)
-    private Double minimumPurchaseAmount;
+    private BigDecimal minimumPurchaseAmount;
 
     @Column(nullable = false)
     private Boolean isActive;
@@ -62,6 +63,7 @@ public class Discount {
     @Column(updatable = false, nullable = false)
     private LocalDateTime createdAt;
 
+    @Column
     private LocalDateTime lastUsedAt;
 
     @Column(nullable = false, length = 50)

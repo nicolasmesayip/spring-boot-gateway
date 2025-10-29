@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Data
-@Table(name = "tb_discounted_products")
+@Table(name = "tb_discounted_product")
 @NoArgsConstructor
 public class DiscountedProduct {
     @Id

@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 @Data
 @Entity
-@Table(name = "product_categories")
+@Table(name = "tb_product_category")
 public class Category {
 
     @Id
