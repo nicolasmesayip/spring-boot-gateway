@@ -10,7 +10,7 @@ import com.nicolasmesa.springboot.productservices.products.exception.ProductNotF
 import com.nicolasmesa.springboot.productservices.products.mapper.ProductMapper;
 import com.nicolasmesa.springboot.productservices.products.mapper.ProductMapperImpl;
 import com.nicolasmesa.springboot.productservices.products.service.ProductService;
-import com.nicolasmesa.springboot.productservices.testcommon.RequestBuilder;
+import com.nicolasmesa.springboot.testcommon.RequestBuilder;
 import net.jqwik.api.ForAll;
 import net.jqwik.api.Property;
 import net.jqwik.api.lifecycle.BeforeTry;

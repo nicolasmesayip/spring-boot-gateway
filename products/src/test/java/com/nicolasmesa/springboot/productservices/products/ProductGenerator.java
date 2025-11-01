@@ -12,7 +12,7 @@ import java.util.List;
 public class ProductGenerator extends SlugGenerator {
     @Provide
     Arbitrary<ProductDto> genProductDto() {
-        return Combinators.combine(genStringLengthBetween1To50, genSlug(), genStringLengthBetween1To255, genSlug(), genPositiveDouble, genCurrency, genPositiveInteger, genBoolean).as(ProductDto::new);
+        return Combinators.combine(genStringLengthBetween1To50, genSlug(), genStringLengthBetween1To255, genSlug(), genPositiveBigDecimal, genCurrency, genPositiveInteger, genBoolean).as(ProductDto::new);
     }
 
     @Provide

@@ -9,6 +9,7 @@ import net.jqwik.api.Arbitraries;
 import net.jqwik.api.Arbitrary;
 import net.jqwik.api.Provide;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -30,9 +31,9 @@ public class DiscountGenerator extends SlugGenerator {
             String discountCode = discountCode().sample();
             String description = genStringLengthBetween1To255.sample();
             DiscountTypes discountType = genDiscountType.sample();
-            Double discount = genPositiveDouble.sample();
+            BigDecimal discount = genPositiveBigDecimal.sample();
             Currency currency = genCurrency.sample();
-            Double minimumPurchaseAmount = genPositiveDouble.sample();
+            BigDecimal minimumPurchaseAmount = genPositiveBigDecimal.sample();
             Boolean isActive = genBoolean.sample();
             Integer maxUses = genPositiveInteger.sample();
             Boolean isStackable = genBoolean.sample();

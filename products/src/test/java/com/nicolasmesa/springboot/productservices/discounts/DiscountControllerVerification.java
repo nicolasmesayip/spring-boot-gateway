@@ -1,7 +1,7 @@
 package com.nicolasmesa.springboot.productservices.discounts;
 
 import com.nicolasmesa.springboot.productservices.discounts.dto.DiscountDto;
-import com.nicolasmesa.springboot.productservices.testcommon.VerifyResponse;
+import com.nicolasmesa.springboot.testcommon.VerifyResponse;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 

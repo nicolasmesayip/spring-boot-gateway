@@ -11,7 +11,7 @@ import com.nicolasmesa.springboot.productservices.discounts.mapper.DiscountMappe
 import com.nicolasmesa.springboot.productservices.discounts.mapper.DiscountMapperImpl;
 import com.nicolasmesa.springboot.productservices.discounts.service.DiscountService;
 import com.nicolasmesa.springboot.productservices.discounts.service.DiscountedProductService;
-import com.nicolasmesa.springboot.productservices.testcommon.RequestBuilder;
+import com.nicolasmesa.springboot.testcommon.RequestBuilder;
 import net.jqwik.api.ForAll;
 import net.jqwik.api.Property;
 import net.jqwik.api.lifecycle.BeforeTry;

@@ -1,4 +1,4 @@
-package com.nicolasmesa.springboot.productservices.testcommon;
+package com.nicolasmesa.springboot.testcommon;
 
 public class Utils {
     public static void withClue(String clue, CheckedRunnable testBlock) {

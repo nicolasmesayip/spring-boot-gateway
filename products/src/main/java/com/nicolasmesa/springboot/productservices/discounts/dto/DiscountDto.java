@@ -1,6 +1,8 @@
 package com.nicolasmesa.springboot.productservices.discounts.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.nicolasmesa.springboot.common.model.Currency;
 import com.nicolasmesa.springboot.productservices.discounts.entity.DiscountTypes;
 import jakarta.validation.constraints.*;
@@ -21,12 +23,16 @@ public record DiscountDto(
         @NotNull(message = "Discount Type is required")
         DiscountTypes discountType,
 
-        @Positive(message = "Discount quantity/percentage must be a positive value")
+        @Digits(integer = 13, fraction = 2)
+        @DecimalMin(value = "0.00", inclusive = true, message = "Discount quantity/percentage must be a positive value")
+        @JsonSerialize(using = ToStringSerializer.class)
         BigDecimal discount,
 
         Currency currency,
 
-        @Positive(message = "Minimum Purchase Amount must be a positive value")
+        @Digits(integer = 13, fraction = 2)
+        @DecimalMin(value = "0.00", inclusive = true, message = "Minimum Purchase Amount must be a positive value")
+        @JsonSerialize(using = ToStringSerializer.class)
         BigDecimal minimumPurchaseAmount,
 
         @NotNull(message = "IsActive is required")

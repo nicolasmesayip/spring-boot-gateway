@@ -1,4 +1,4 @@
-package com.nicolasmesa.springboot.productservices.testcommon;
+package com.nicolasmesa.springboot.testcommon;
 
 @FunctionalInterface
 public interface CheckedRunnable {

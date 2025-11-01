@@ -1,4 +1,4 @@
-package com.nicolasmesa.springboot.productservices.testcommon;
+package com.nicolasmesa.springboot.testcommon;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

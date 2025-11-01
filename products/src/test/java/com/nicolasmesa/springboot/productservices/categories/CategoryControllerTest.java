@@ -11,7 +11,7 @@ import com.nicolasmesa.springboot.productservices.categories.exception.CategoryN
 import com.nicolasmesa.springboot.productservices.categories.mapper.CategoryMapper;
 import com.nicolasmesa.springboot.productservices.categories.mapper.CategoryMapperImpl;
 import com.nicolasmesa.springboot.productservices.categories.service.CategoryService;
-import com.nicolasmesa.springboot.productservices.testcommon.RequestBuilder;
+import com.nicolasmesa.springboot.testcommon.RequestBuilder;
 import net.jqwik.api.ForAll;
 import net.jqwik.api.Property;
 import net.jqwik.api.lifecycle.BeforeTry;

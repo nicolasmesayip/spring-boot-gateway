@@ -1,4 +1,4 @@
-package com.nicolasmesa.springboot.productservices.testcommon;
+package com.nicolasmesa.springboot.testcommon;
 
 import org.hamcrest.Matchers;
 import org.springframework.test.web.servlet.ResultActions;

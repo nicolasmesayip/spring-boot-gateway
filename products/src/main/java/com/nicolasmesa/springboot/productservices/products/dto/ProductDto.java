@@ -1,11 +1,10 @@
 package com.nicolasmesa.springboot.productservices.products.dto;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.nicolasmesa.springboot.common.model.Currency;
 import com.nicolasmesa.springboot.common.validator.ValidSlug;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 
 import java.math.BigDecimal;
 
@@ -26,8 +25,9 @@ public record ProductDto(
         @Size(max = 50, message = "Product category must be between 1 - 50 characters")
         String categorySlug,
 
-        @NotNull
-        @Min(value = 0, message = "Price cannot be negative.")
+        @Digits(integer = 13, fraction = 2)
+        @DecimalMin(value = "0.00", inclusive = true, message = "Price cannot be negative.")
+        @JsonSerialize(using = ToStringSerializer.class)
         BigDecimal price,
 
         @NotNull(message = "Currency is required")

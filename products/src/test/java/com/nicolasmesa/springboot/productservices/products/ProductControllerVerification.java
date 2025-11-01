@@ -1,7 +1,7 @@
 package com.nicolasmesa.springboot.productservices.products;
 
 import com.nicolasmesa.springboot.productservices.products.entity.Product;
-import com.nicolasmesa.springboot.productservices.testcommon.VerifyResponse;
+import com.nicolasmesa.springboot.testcommon.VerifyResponse;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 

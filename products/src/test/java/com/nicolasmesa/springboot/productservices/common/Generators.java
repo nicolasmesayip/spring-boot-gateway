@@ -5,6 +5,8 @@ import net.jqwik.api.Arbitraries;
 import net.jqwik.api.Arbitrary;
 import net.jqwik.time.api.DateTimes;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 
 public class Generators {
@@ -17,6 +19,7 @@ public class Generators {
 
     public static Arbitrary<Integer> genInteger = Arbitraries.integers().between(0, 10);
     public static Arbitrary<Double> genPositiveDouble = Arbitraries.doubles().greaterOrEqual(0.0);
+    public static Arbitrary<BigDecimal> genPositiveBigDecimal = Arbitraries.bigDecimals().between(BigDecimal.valueOf(0.00), BigDecimal.valueOf(10000000000000L)).map(i -> i.setScale(2, RoundingMode.HALF_UP));
     public static Arbitrary<Integer> genPositiveInteger = Arbitraries.integers().greaterOrEqual(0);
 
     public static Arbitrary<Currency> genCurrency = Arbitraries.of(Currency.class);
