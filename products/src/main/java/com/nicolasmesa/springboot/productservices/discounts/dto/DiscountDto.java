@@ -10,6 +10,8 @@ import jakarta.validation.constraints.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+import static com.nicolasmesa.springboot.common.Constants.DATE_TIME_FORMAT;
+
 public record DiscountDto(
 
         @NotBlank(message = "Discount code is required")
@@ -46,11 +48,11 @@ public record DiscountDto(
 
         @NotNull(message = "Start Date Time is required")
         @FutureOrPresent(message = "The Start Date Time must be in Present or Future")
-        @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+        @JsonFormat(pattern = DATE_TIME_FORMAT)
         LocalDateTime startDateTime,
 
         @Future(message = "The End Date Time must be in the Future")
-        @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+        @JsonFormat(pattern = DATE_TIME_FORMAT)
         LocalDateTime endDateTime,
 
         @NotNull(message = "Update User is required")

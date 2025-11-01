@@ -5,11 +5,9 @@ import com.nicolasmesa.springboot.testcommon.VerifyResponse;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class DiscountControllerVerification extends VerifyResponse<DiscountDto> {
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
 
     @Override
     public void verifyData(ResultActions resultActions, DiscountDto discount) throws Exception {
@@ -26,8 +24,8 @@ public class DiscountControllerVerification extends VerifyResponse<DiscountDto> 
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.isActive").value(discount.isActive()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.maxUses").value(discount.maxUses()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.isStackable").value(discount.isStackable()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data.startDateTime").value(discount.startDateTime().format(formatter)))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data.endDateTime").value(discount.endDateTime().format(formatter)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.startDateTime").value(discount.startDateTime().format(dateTimeFormatter)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.endDateTime").value(discount.endDateTime().format(dateTimeFormatter)))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.createdBy").value(discount.createdBy()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.updatedBy").value(discount.updatedBy()));
     }

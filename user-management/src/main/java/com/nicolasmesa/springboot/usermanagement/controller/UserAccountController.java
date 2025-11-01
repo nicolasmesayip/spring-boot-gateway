@@ -18,14 +18,14 @@ public class UserAccountController {
     private final UserAccountService userAccountService;
     private final UserAccountMapper userAccountMapper;
 
-    public UserAccountController(UserAccountService userAccountService) {
+    public UserAccountController(UserAccountService userAccountService, UserAccountMapper userAccountMapper) {
         this.userAccountService = userAccountService;
-        this.userAccountMapper = UserAccountMapper.INSTANCE;
+        this.userAccountMapper = userAccountMapper;
     }
 
     @GetMapping(path = "/")
     public ResponseEntity<ApiResponse<List<UserAccountDetailsDto>>> getUsers() {
-        return ResponseMethods.ok(userAccountService.getUsers().stream().map(userAccountMapper::toDto).toList());
+        return ResponseMethods.ok(userAccountMapper.toDto(userAccountService.getUsers()));
     }
 
     @GetMapping(path = "/{email}")

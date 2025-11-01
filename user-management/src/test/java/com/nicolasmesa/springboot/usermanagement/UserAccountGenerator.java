@@ -13,11 +13,11 @@ import java.util.List;
 public class UserAccountGenerator extends Generators {
 
     public static final Arbitrary<String> genPhoneNumber = Arbitraries.strings().withCharRange('0', '9').ofMinLength(4).ofMaxLength(14);
-    public static final Arbitrary<String> genCountryCode = Arbitraries.strings().withCharRange('0', '9').ofLength(2);
+    public static final Arbitrary<String> genCountryCode = Arbitraries.integers().between(1, 999).map(Object::toString);
 
     @Provide
     public Arbitrary<UserAccountDetailsDto> genUserAccountDetailsDto() {
-        return Combinators.combine(genStringLengthBetween1To50, genStringLengthBetween1To100, genStringLengthBetween1To100, genPhoneNumber, genCountryCode, genStringLengthBetween1To255, genDateTimeInPast).as(UserAccountDetailsDto::new);
+        return Combinators.combine(genStringLengthBetween1To50, genStringLengthBetween1To100, genStringLengthBetween1To100, genCountryCode, genPhoneNumber, genStringLengthBetween1To255, genLocalDateTimeInPast).as(UserAccountDetailsDto::new);
     }
 
     @Provide

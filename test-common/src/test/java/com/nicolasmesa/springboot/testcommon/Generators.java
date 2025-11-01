@@ -7,9 +7,8 @@ import net.jqwik.time.api.DateTimes;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Date;
 
 public class Generators {
     public static Arbitrary<String> genStringLengthBetween1To50 = Arbitraries.strings().alpha().ofMinLength(1).ofMaxLength(50);
@@ -29,5 +28,5 @@ public class Generators {
 
     public static Arbitrary<LocalDateTime> genLocalDateTimeInPresentOrFuture = DateTimes.dateTimes().between(LocalDateTime.now(), LocalDateTime.now().plusYears(5));
     public static Arbitrary<LocalDateTime> genLocalDateTimeInFuture = DateTimes.dateTimes().between(LocalDateTime.now().plusDays(1), LocalDateTime.now().plusYears(5));
-    public static Arbitrary<Date> genDateTimeInPast = DateTimes.dateTimes().between(LocalDateTime.now().minusYears(100), LocalDateTime.now().minusDays(1)).map(localDateTime -> Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant()));
+    public static Arbitrary<LocalDate> genLocalDateTimeInPast = DateTimes.dateTimes().between(LocalDateTime.now().minusYears(100), LocalDateTime.now().minusDays(1)).map(LocalDateTime::toLocalDate);
 }

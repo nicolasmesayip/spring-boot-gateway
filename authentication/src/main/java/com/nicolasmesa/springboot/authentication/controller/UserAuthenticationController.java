@@ -24,11 +24,11 @@ public class UserAuthenticationController {
     private final EmailVerificationMapper emailVerificationMapper;
     private final UserAccountMapper userAccountDetailsMapper;
 
-    public UserAuthenticationController(UserAuthenticationService userAuthenticationService, RegistrationService registrationService) {
+    public UserAuthenticationController(UserAuthenticationService userAuthenticationService, RegistrationService registrationService, UserAccountMapper userAccountMapper) {
         this.userAuthenticationService = userAuthenticationService;
         this.registrationService = registrationService;
         this.emailVerificationMapper = EmailVerificationMapper.INSTANCE;
-        this.userAccountDetailsMapper = UserAccountMapper.INSTANCE;
+        this.userAccountDetailsMapper = userAccountMapper;
     }
 
     @PostMapping(path = "/login")

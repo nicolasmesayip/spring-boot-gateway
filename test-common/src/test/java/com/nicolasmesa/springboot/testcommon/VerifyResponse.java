@@ -4,9 +4,16 @@ import org.hamcrest.Matchers;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+import static com.nicolasmesa.springboot.common.Constants.DATE_FORMAT;
+import static com.nicolasmesa.springboot.common.Constants.DATE_TIME_FORMAT;
+
 public abstract class VerifyResponse<T> {
+    protected DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(DATE_TIME_FORMAT);
+    protected DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(DATE_FORMAT);
+
     public void verifyErrors(ResultActions resultActions, List<String> errors) throws Exception {
         resultActions
                 .andExpect(MockMvcResultMatchers.status().is4xxClientError())
