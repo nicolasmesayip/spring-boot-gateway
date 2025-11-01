@@ -1,5 +1,6 @@
 package com.nicolasmesa.springboot.productservices.common;
 
+import com.nicolasmesa.springboot.testcommon.Generators;
 import net.jqwik.api.Arbitrary;
 import net.jqwik.api.Combinators;
 import net.jqwik.api.Provide;

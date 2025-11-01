@@ -1,4 +1,4 @@
-package com.nicolasmesa.springboot.productservices.common;
+package com.nicolasmesa.springboot.testcommon;
 
 import com.nicolasmesa.springboot.common.model.Currency;
 import net.jqwik.api.Arbitraries;

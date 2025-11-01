@@ -2,8 +2,8 @@ package com.nicolasmesa.springboot.productservices.categories;
 
 import com.nicolasmesa.springboot.productservices.categories.dto.CategoryDto;
 import com.nicolasmesa.springboot.productservices.categories.entity.Category;
-import com.nicolasmesa.springboot.productservices.common.Generators;
 import com.nicolasmesa.springboot.productservices.common.SlugGenerator;
+import com.nicolasmesa.springboot.testcommon.Generators;
 import net.jqwik.api.Arbitrary;
 import net.jqwik.api.Combinators;
 import net.jqwik.api.Provide;
