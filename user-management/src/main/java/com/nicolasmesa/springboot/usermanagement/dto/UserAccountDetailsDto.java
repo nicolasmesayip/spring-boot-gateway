@@ -1,10 +1,7 @@
 package com.nicolasmesa.springboot.usermanagement.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Past;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 
 import java.time.LocalDate;
 
@@ -22,6 +19,7 @@ public record UserAccountDetailsDto(
 
         @NotBlank(message = "Email Address is required.")
         @Size(min = 1, max = 100, message = "Email address must be between 1 and 100 characters")
+        @Email(message = "Invalid email format")
         String emailAddress,
 
         @NotBlank(message = "Country Code is required.")

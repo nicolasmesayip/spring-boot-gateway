@@ -14,20 +14,22 @@ import com.nicolasmesa.springboot.usermanagement.mapper.UserAccountMapper;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(path = "/api/auth")
+@Validated
 public class UserAuthenticationController {
     private final UserAuthenticationService userAuthenticationService;
     private final RegistrationService registrationService;
     private final EmailVerificationMapper emailVerificationMapper;
     private final UserAccountMapper userAccountDetailsMapper;
 
-    public UserAuthenticationController(UserAuthenticationService userAuthenticationService, RegistrationService registrationService, UserAccountMapper userAccountMapper) {
+    public UserAuthenticationController(UserAuthenticationService userAuthenticationService, RegistrationService registrationService, EmailVerificationMapper emailVerificationMapper, UserAccountMapper userAccountMapper) {
         this.userAuthenticationService = userAuthenticationService;
         this.registrationService = registrationService;
-        this.emailVerificationMapper = EmailVerificationMapper.INSTANCE;
+        this.emailVerificationMapper = emailVerificationMapper;
         this.userAccountDetailsMapper = userAccountMapper;
     }
 
@@ -45,8 +47,8 @@ public class UserAuthenticationController {
     }
 
     @PostMapping(path = "/resetPassword")
-    public ResponseEntity<ApiResponse<AuthResponse>> resetPassword(@Valid @RequestBody @NotNull UserCredentialsDto credentials) {
-        return ResponseMethods.ok(userAuthenticationService.resetPassword(credentials.emailAddress()));
+    public ResponseEntity<ApiResponse<AuthResponse>> resetPassword(@Valid @RequestBody @NotNull EmailVerificationDto emailAddress) {
+        return ResponseMethods.ok(userAuthenticationService.resetPassword(emailAddress.emailAddress()));
     }
 
     @PostMapping(path = "/verifyOTPCode")

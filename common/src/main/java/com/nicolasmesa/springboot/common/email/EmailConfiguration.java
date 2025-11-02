@@ -1,4 +1,4 @@
-package com.nicolasmesa.springboot.authentication.config;
+package com.nicolasmesa.springboot.common.email;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

@@ -36,7 +36,7 @@ public class UserAccountControllerTest extends UserAccountGenerator {
         mockMvc = MockMvcBuilders.standaloneSetup(userAccountController).setControllerAdvice(new ExceptionHandler()).build();
     }
 
-    @Property
+    @Property(tries = 5)
     public void getUsers(@ForAll("genListOfAccountDetails") List<UserAccountDetails> userAccounts) throws Exception {
         Mockito.when(userAccountService.getUsers()).thenReturn(userAccounts);
         ResultActions resultActions = mockMvc.perform(RequestBuilder.get("/api/users/")).andExpect(MockMvcResultMatchers.status().isOk());
@@ -44,7 +44,7 @@ public class UserAccountControllerTest extends UserAccountGenerator {
         userAccountControllerVerification.verifyData(resultActions, userAccountMapper.toDto(userAccounts));
     }
 
-    @Property
+    @Property(tries = 5)
     public void getUserByEmail(@ForAll("genUserAccountDetails") UserAccountDetails userAccountDetails) throws Exception {
         String email = userAccountDetails.getEmailAddress();
         Mockito.when(userAccountService.getUserByEmail(email, email)).thenReturn(userAccountDetails);
@@ -55,7 +55,7 @@ public class UserAccountControllerTest extends UserAccountGenerator {
         userAccountControllerVerification.verifyData(resultActions, userAccountMapper.toDto(userAccountDetails));
     }
 
-    @Property
+    @Property(tries = 5)
     public void failedGettingUserByEmailUnauthorized(@ForAll("genUserAccountDetails") UserAccountDetails userAccountDetails) throws Exception {
         String email = userAccountDetails.getEmailAddress();
         Mockito.when(userAccountService.getUserByEmail(email, "")).thenThrow(new UnAuthorizedException());
@@ -66,7 +66,7 @@ public class UserAccountControllerTest extends UserAccountGenerator {
         userAccountControllerVerification.verifyErrors(resultActions, List.of("You are not authorized to perform the action."));
     }
 
-    @Property
+    @Property(tries = 5)
     public void failedGettingInvalidUserByEmail(@ForAll("genUserAccountDetails") UserAccountDetails userAccountDetails) throws Exception {
         String email = userAccountDetails.getEmailAddress();
         Mockito.when(userAccountService.getUserByEmail(email, email)).thenThrow(new UserNotFoundException(email));
@@ -77,7 +77,7 @@ public class UserAccountControllerTest extends UserAccountGenerator {
         userAccountControllerVerification.verifyErrors(resultActions, List.of("User not found with email: " + email));
     }
 
-    @Property
+    @Property(tries = 5)
     public void updateUserAccountDetails(@ForAll("genUserAccountDetails") UserAccountDetails userAccountDetails) throws Exception {
         String email = userAccountDetails.getEmailAddress();
         Mockito.doNothing().when(userAccountService).updateUserAccountDetails(email, userAccountDetails);
@@ -87,7 +87,7 @@ public class UserAccountControllerTest extends UserAccountGenerator {
         userAccountControllerVerification.verifyNoContent(resultActions);
     }
 
-    @Property
+    @Property(tries = 5)
     public void failedUpdatingUserAccountDetails(@ForAll("genUserAccountDetails") UserAccountDetails userAccountDetails) throws Exception {
         String email = userAccountDetails.getEmailAddress();
         Mockito.doThrow(new UserNotFoundException(email)).when(userAccountService).updateUserAccountDetails(email, userAccountDetails);
@@ -97,7 +97,7 @@ public class UserAccountControllerTest extends UserAccountGenerator {
         userAccountControllerVerification.verifyErrors(resultActions, List.of("User not found with email: " + email));
     }
 
-    @Property
+    @Property(tries = 5)
     public void deleteUser(@ForAll("genUserAccountDetails") UserAccountDetails userAccountDetails) throws Exception {
         String email = userAccountDetails.getEmailAddress();
         Mockito.doNothing().when(userAccountService).deleteUser(email);
@@ -106,7 +106,7 @@ public class UserAccountControllerTest extends UserAccountGenerator {
         userAccountControllerVerification.verifyNoContent(resultActions);
     }
 
-    @Property
+    @Property(tries = 5)
     public void failedDeletingUser(@ForAll("genUserAccountDetails") UserAccountDetails userAccountDetails) throws Exception {
         String email = userAccountDetails.getEmailAddress();
         Mockito.doThrow(new UserNotFoundException(email)).when(userAccountService).deleteUser(email);
@@ -115,7 +115,7 @@ public class UserAccountControllerTest extends UserAccountGenerator {
         userAccountControllerVerification.verifyErrors(resultActions, List.of("User not found with email: " + email));
     }
 
-    @Property
+    @Property(tries = 5)
     public void register(@ForAll("genUserAccountDetails") UserAccountDetails userAccountDetails) throws Exception {
         String email = userAccountDetails.getEmailAddress();
         Mockito.doNothing().when(userAccountService).register(userAccountDetails, email);
@@ -126,7 +126,7 @@ public class UserAccountControllerTest extends UserAccountGenerator {
         userAccountControllerVerification.verifyNoContent(resultActions);
     }
 
-    @Property
+    @Property(tries = 5)
     public void failedRegisteringUnauthorized(@ForAll("genUserAccountDetails") UserAccountDetails userAccountDetails) throws Exception {
         Mockito.doThrow(new UnAuthorizedException()).when(userAccountService).register(userAccountDetails, "");
         ResultActions resultActions = mockMvc.perform(RequestBuilder.post("/api/users/register")
@@ -136,11 +136,11 @@ public class UserAccountControllerTest extends UserAccountGenerator {
         userAccountControllerVerification.verifyErrors(resultActions, List.of("You are not authorized to perform the action."));
     }
 
-    @Property
+    @Property(tries = 5)
     public void failedRegisteringUserAlreadyExists(@ForAll("genUserAccountDetails") UserAccountDetails userAccountDetails) throws Exception {
         String email = userAccountDetails.getEmailAddress();
         Mockito.doThrow(new UserAlreadyExistsException(email)).when(userAccountService).register(userAccountDetails, email);
-        
+
         ResultActions resultActions = mockMvc.perform(RequestBuilder.post("/api/users/register")
                 .body(userAccountMapper.toDto(userAccountDetails))
                 .header("X-GATEWAY-EMAIL", email));

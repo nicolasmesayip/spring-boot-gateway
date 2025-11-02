@@ -1,63 +1,39 @@
 package com.nicolasmesa.springboot.authentication.service;
 
-import com.nicolasmesa.springboot.authentication.config.EmailConfiguration;
 import com.nicolasmesa.springboot.authentication.entity.EmailVerification;
 import com.nicolasmesa.springboot.authentication.repository.EmailVerificationRepository;
+import com.nicolasmesa.springboot.common.email.EmailConfiguration;
+import com.nicolasmesa.springboot.common.email.EmailSender;
 import org.springframework.stereotype.Service;
 
-import javax.mail.*;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
+import javax.mail.MessagingException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Optional;
-import java.util.Properties;
 import java.util.Random;
 
 @Service
-public class EmailVerificationServiceImpl implements EmailVerificationService {
-    private final EmailConfiguration emailConfiguration;
+public class EmailVerificationServiceImpl extends EmailSender implements EmailVerificationService {
     private final EmailVerificationRepository emailVerificationRepository;
-    private final Session session;
 
-    public EmailVerificationServiceImpl(EmailVerificationRepository emailVerificationRepository, EmailConfiguration emailConfiguration) {
+    public EmailVerificationServiceImpl(EmailVerificationRepository emailVerificationRepository, EmailConfiguration emailConfiguration) throws MessagingException {
+        super(emailConfiguration);
+
         this.emailVerificationRepository = emailVerificationRepository;
-        this.emailConfiguration = emailConfiguration;
-
-        Properties properties = new Properties();
-
-        properties.put("mail.smtp.host", emailConfiguration.host());
-        properties.put("mail.smtp.port", emailConfiguration.port());
-        properties.put("mail.smtp.auth", emailConfiguration.auth());
-        properties.put("mail.smtp.starttls.enable", emailConfiguration.enableTLS());
-
-        this.session = Session.getInstance(properties, new Authenticator() {
-            @Override
-            protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(emailConfiguration.senderEmail(), emailConfiguration.senderPassword());
-            }
-        });
     }
 
     public void sendEmail(String emailRecipient) {
         EmailVerification verificationCode = generateVerificationCode(emailRecipient);
 
         try {
-            Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(emailConfiguration.senderEmail()));
-            message.setRecipient(Message.RecipientType.TO, new InternetAddress(emailRecipient));
-            message.setSubject("Your Verification Code");
-
+            String subject = "Your Verification Code";
             String emailBody = "Hi,\n\n" +
                     "Your verification code is " + verificationCode.getVerificationOtpCode() + "\n\n" +
                     "This code is valid for the next 30 minutes.\n\n" +
                     "If you did not request this code, please ignore this email.";
 
-            message.setText(emailBody);
-
-            Transport.send(message);
+            sendEmail(emailRecipient, subject, emailBody);
             emailVerificationRepository.save(verificationCode);
-
         } catch (MessagingException e) {
             throw new RuntimeException(e);
         }
