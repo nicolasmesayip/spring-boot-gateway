@@ -28,5 +28,14 @@ public class Generators {
 
     public static Arbitrary<LocalDateTime> genLocalDateTimeInPresentOrFuture = DateTimes.dateTimes().between(LocalDateTime.now(), LocalDateTime.now().plusYears(5));
     public static Arbitrary<LocalDateTime> genLocalDateTimeInFuture = DateTimes.dateTimes().between(LocalDateTime.now().plusDays(1), LocalDateTime.now().plusYears(5));
-    public static Arbitrary<LocalDate> genLocalDateTimeInPast = DateTimes.dateTimes().between(LocalDateTime.now().minusYears(100), LocalDateTime.now().minusDays(1)).map(LocalDateTime::toLocalDate);
+    public static Arbitrary<LocalDateTime> genLocalDateTimeInPast = DateTimes.dateTimes().between(LocalDateTime.now().minusYears(100), LocalDateTime.now().minusDays(1));
+    public static Arbitrary<LocalDate> genLocalDateInPast = DateTimes.dateTimes().between(LocalDateTime.now().minusYears(100), LocalDateTime.now().minusDays(1)).map(LocalDateTime::toLocalDate);
+
+    public static final Arbitrary<String> genEmailAddress = Arbitraries.ofSuppliers(() -> {
+        String personal = Arbitraries.strings().alpha().ofMinLength(5).ofMaxLength(15).sample();
+        String domain = Arbitraries.strings().alpha().ofLength(7).sample();
+        String tld = Arbitraries.strings().alpha().ofMinLength(2).ofMaxLength(3).sample();
+
+        return personal + "@" + domain + "." + tld;
+    });
 }

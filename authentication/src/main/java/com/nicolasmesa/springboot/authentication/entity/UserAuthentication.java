@@ -1,20 +1,24 @@
 package com.nicolasmesa.springboot.authentication.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Data
 @Table(name = "tb_auth")
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserAuthentication {
 
     @Id
-    @Column(nullable = false, unique = true, name = "emailAddress")
+    @Column(nullable = false, unique = true, name = "emailAddress", length = 100)
     private String emailAddress;
 
-    @Column(nullable = false, name = "password")
+    @Column(nullable = false, name = "password", length = 55)
     private String hashedPassword;
 
     @Column(name = "failed_login_attempts")
@@ -33,9 +37,6 @@ public class UserAuthentication {
     private LocalDateTime registeredAt;
 
     public int MAXIMUM_LOGIN_ATTEMPTS = 5;
-
-    public UserAuthentication() {
-    }
 
     public UserAuthentication(String email, String hashedPassword) {
         this.emailAddress = email;

@@ -15,7 +15,7 @@ public class EmailVerification {
     private String email;
 
     @Column(nullable = false)
-    private int verificationOtpCode;
+    private Integer verificationOtpCode;
 
     @Column(nullable = false)
     private LocalDateTime requestTimestamp;
@@ -23,7 +23,7 @@ public class EmailVerification {
     public EmailVerification() {
     }
 
-    public EmailVerification(String email, int verificationOtpCode, LocalDateTime requestTimestamp) {
+    public EmailVerification(String email, Integer verificationOtpCode, LocalDateTime requestTimestamp) {
         this.email = email;
         this.verificationOtpCode = verificationOtpCode;
         this.requestTimestamp = requestTimestamp;

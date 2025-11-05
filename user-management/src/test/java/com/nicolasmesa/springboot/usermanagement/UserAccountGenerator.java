@@ -14,17 +14,10 @@ public class UserAccountGenerator extends Generators {
 
     public static final Arbitrary<String> genPhoneNumber = Arbitraries.strings().withCharRange('0', '9').ofMinLength(4).ofMaxLength(14);
     public static final Arbitrary<String> genCountryCode = Arbitraries.integers().between(1, 999).map(Object::toString);
-    public static final Arbitrary<String> genEmailAddress = Arbitraries.ofSuppliers(() -> {
-        String personal = Arbitraries.strings().alpha().ofMinLength(5).ofMaxLength(15).sample();
-        String domain = Arbitraries.strings().alpha().ofLength(7).sample();
-        String tld = Arbitraries.strings().alpha().ofMinLength(2).ofMaxLength(3).sample();
-
-        return personal + "@" + domain + "." + tld;
-    });
 
     @Provide
     public Arbitrary<UserAccountDetailsDto> genUserAccountDetailsDto() {
-        return Combinators.combine(genStringLengthBetween1To50, genStringLengthBetween1To100, genEmailAddress, genCountryCode, genPhoneNumber, genStringLengthBetween1To255, genLocalDateTimeInPast).as(UserAccountDetailsDto::new);
+        return Combinators.combine(genStringLengthBetween1To50, genStringLengthBetween1To100, genEmailAddress, genCountryCode, genPhoneNumber, genStringLengthBetween1To255, genLocalDateInPast).as(UserAccountDetailsDto::new);
     }
 
     @Provide
