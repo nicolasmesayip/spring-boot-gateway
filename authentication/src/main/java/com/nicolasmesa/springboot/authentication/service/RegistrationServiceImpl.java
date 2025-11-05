@@ -8,15 +8,10 @@ import com.nicolasmesa.springboot.common.exceptions.UnExpectedException;
 import com.nicolasmesa.springboot.common.exceptions.UserAlreadyExistsException;
 import com.nicolasmesa.springboot.common.exceptions.UserNotFoundException;
 import com.nicolasmesa.springboot.usermanagement.entity.UserAccountDetails;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
+import com.nicolasmesa.springboot.usermanagement.mapper.UserAccountMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
 
 import static com.nicolasmesa.springboot.authentication.config.PasswordConfiguration.encodePassword;
 
@@ -24,24 +19,19 @@ import static com.nicolasmesa.springboot.authentication.config.PasswordConfigura
 public class RegistrationServiceImpl implements RegistrationService {
     private final UserAuthenticationRepository userAuthenticationRepository;
     private final PasswordEncoder passwordEncoder;
-    private final RestTemplate restTemplate;
+    private final UserManagementRegistrationService userManagementRegistrationService;
+    private final UserAccountMapper userAccountMapper;
 
-    @Value("${user-account.url}")
-    private String userAccountUrl;
-
-    public RegistrationServiceImpl(UserAuthenticationRepository userAuthenticationRepository, PasswordEncoder passwordEncoder, RestTemplate restTemplate) {
+    public RegistrationServiceImpl(UserAuthenticationRepository userAuthenticationRepository, PasswordEncoder passwordEncoder, UserManagementRegistrationService userManagementRegistrationService, UserAccountMapper userAccountMapper) {
         this.userAuthenticationRepository = userAuthenticationRepository;
         this.passwordEncoder = passwordEncoder;
-        this.restTemplate = restTemplate;
+        this.userManagementRegistrationService = userManagementRegistrationService;
+        this.userAccountMapper = userAccountMapper;
     }
 
     @Override
     @Transactional
     public void register(UserCredentialsDto credentials, UserAccountDetails userAccountDetails) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set("X-GATEWAY-EMAIL", userAccountDetails.getEmailAddress());
-
         if (userAuthenticationRepository.existsById(credentials.emailAddress()))
             throw new UserAlreadyExistsException(credentials.emailAddress());
 
@@ -49,11 +39,9 @@ public class RegistrationServiceImpl implements RegistrationService {
             UserAuthentication user = new UserAuthentication(credentials.emailAddress(), encodePassword(passwordEncoder, credentials.password()));
 
             userAuthenticationRepository.save(user);
-
-            HttpEntity<UserAccountDetails> requestEntity = new HttpEntity<>(userAccountDetails, headers);
-            restTemplate.exchange(userAccountUrl + "/api/users/register", HttpMethod.POST, requestEntity, Void.class);
+            userManagementRegistrationService.register(userAccountMapper.toDto(userAccountDetails), userAccountDetails.getEmailAddress());
         } catch (Exception e) {
-            restTemplate.delete(userAccountUrl + "/api/users/{email}", userAccountDetails.getEmailAddress());
+            userManagementRegistrationService.deleteUser(userAccountDetails.getEmailAddress());
             userAuthenticationRepository.deleteById(credentials.emailAddress());
             throw new UnExpectedException("Rolling back User Registry: " + e.getMessage());
         }
@@ -66,7 +54,7 @@ public class RegistrationServiceImpl implements RegistrationService {
         if (!verifyPassword(userAuthentication, credentials)) throw new UnAuthorizedException();
 
         userAuthenticationRepository.deleteById(credentials.emailAddress());
-        restTemplate.delete(userAccountUrl + "/api/users/{email}", credentials.emailAddress());
+        userManagementRegistrationService.deleteUser(credentials.emailAddress());
     }
 
     private boolean verifyPassword(UserAuthentication userAuthentication, UserCredentialsDto credentials) {

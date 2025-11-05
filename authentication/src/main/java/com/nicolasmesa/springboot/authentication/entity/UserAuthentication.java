@@ -18,7 +18,7 @@ public class UserAuthentication {
     @Column(nullable = false, unique = true, name = "emailAddress", length = 100)
     private String emailAddress;
 
-    @Column(nullable = false, name = "password", length = 55)
+    @Column(nullable = false, name = "password", length = 255)
     private String hashedPassword;
 
     @Column(name = "failed_login_attempts")
