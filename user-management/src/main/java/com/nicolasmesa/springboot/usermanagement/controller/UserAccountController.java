@@ -1,8 +1,8 @@
 package com.nicolasmesa.springboot.usermanagement.controller;
 
 import com.nicolasmesa.springboot.common.ResponseMethods;
+import com.nicolasmesa.springboot.common.dto.UserAccountDetailsDto;
 import com.nicolasmesa.springboot.common.model.ApiResponse;
-import com.nicolasmesa.springboot.usermanagement.dto.UserAccountDetailsDto;
 import com.nicolasmesa.springboot.usermanagement.mapper.UserAccountMapper;
 import com.nicolasmesa.springboot.usermanagement.service.UserAccountService;
 import jakarta.validation.Valid;

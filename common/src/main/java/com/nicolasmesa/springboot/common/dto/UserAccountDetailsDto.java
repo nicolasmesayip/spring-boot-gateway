@@ -1,4 +1,4 @@
-package com.nicolasmesa.springboot.usermanagement.dto;
+package com.nicolasmesa.springboot.common.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.*;

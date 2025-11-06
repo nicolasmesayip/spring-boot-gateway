@@ -1,6 +1,6 @@
 package com.nicolasmesa.springboot.authentication.dto;
 
-import com.nicolasmesa.springboot.usermanagement.dto.UserAccountDetailsDto;
+import com.nicolasmesa.springboot.common.dto.UserAccountDetailsDto;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 

@@ -50,8 +50,8 @@ public class DiscountControllerVerification extends VerifyResponse<DiscountDto> 
                     .andExpect(MockMvcResultMatchers.jsonPath("$.data[" + i + "].isActive").value(discount.isActive()))
                     .andExpect(MockMvcResultMatchers.jsonPath("$.data[" + i + "].maxUses").value(discount.maxUses()))
                     .andExpect(MockMvcResultMatchers.jsonPath("$.data[" + i + "].isStackable").value(discount.isStackable()))
-                    .andExpect(MockMvcResultMatchers.jsonPath("$.data[" + i + "].startDateTime").value(discount.startDateTime().format(formatter)))
-                    .andExpect(MockMvcResultMatchers.jsonPath("$.data[" + i + "].endDateTime").value(discount.endDateTime().format(formatter)))
+                    .andExpect(MockMvcResultMatchers.jsonPath("$.data[" + i + "].startDateTime").value(discount.startDateTime().format(dateTimeFormatter)))
+                    .andExpect(MockMvcResultMatchers.jsonPath("$.data[" + i + "].endDateTime").value(discount.endDateTime().format(dateTimeFormatter)))
                     .andExpect(MockMvcResultMatchers.jsonPath("$.data[" + i + "].createdBy").value(discount.createdBy()))
                     .andExpect(MockMvcResultMatchers.jsonPath("$.data[" + i + "].updatedBy").value(discount.updatedBy()));
         }

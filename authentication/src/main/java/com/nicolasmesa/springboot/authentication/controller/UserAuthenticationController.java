@@ -9,7 +9,6 @@ import com.nicolasmesa.springboot.authentication.service.RegistrationService;
 import com.nicolasmesa.springboot.authentication.service.UserAuthenticationService;
 import com.nicolasmesa.springboot.common.ResponseMethods;
 import com.nicolasmesa.springboot.common.model.ApiResponse;
-import com.nicolasmesa.springboot.usermanagement.entity.UserAccountDetails;
 import com.nicolasmesa.springboot.usermanagement.mapper.UserAccountMapper;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -40,9 +39,7 @@ public class UserAuthenticationController {
 
     @PostMapping(path = "/register")
     public ResponseEntity<ApiResponse<AuthResponse>> register(@Valid @RequestBody @NotNull UserRegisterRequest userRegisterRequest) {
-        UserAccountDetails userAccountDetails = userAccountDetailsMapper.toEntity(userRegisterRequest.userAccountDetails());
-
-        registrationService.register(userRegisterRequest.userCredentials(), userAccountDetails);
+        registrationService.register(userRegisterRequest.userCredentials(), userRegisterRequest.userAccountDetails());
         return ResponseMethods.noContent();
     }
 

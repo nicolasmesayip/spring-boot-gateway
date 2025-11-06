@@ -1,27 +1,15 @@
 package com.nicolasmesa.springboot.usermanagement;
 
-import com.nicolasmesa.springboot.testcommon.Generators;
-import com.nicolasmesa.springboot.usermanagement.dto.UserAccountDetailsDto;
+import com.nicolasmesa.springboot.testcommon.UserAccountDtoGenerator;
 import com.nicolasmesa.springboot.usermanagement.entity.UserAccountDetails;
-import net.jqwik.api.Arbitraries;
 import net.jqwik.api.Arbitrary;
-import net.jqwik.api.Combinators;
 import net.jqwik.api.Provide;
 
 import java.util.List;
 
-public class UserAccountGenerator extends Generators {
-
-    public static final Arbitrary<String> genPhoneNumber = Arbitraries.strings().withCharRange('0', '9').ofMinLength(4).ofMaxLength(14);
-    public static final Arbitrary<String> genCountryCode = Arbitraries.integers().between(1, 999).map(Object::toString);
-
+public class UserAccountGenerator extends UserAccountDtoGenerator {
     @Provide
-    public Arbitrary<UserAccountDetailsDto> genUserAccountDetailsDto() {
-        return Combinators.combine(genStringLengthBetween1To50, genStringLengthBetween1To100, genEmailAddress, genCountryCode, genPhoneNumber, genStringLengthBetween1To255, genLocalDateInPast).as(UserAccountDetailsDto::new);
-    }
-
-    @Provide
-    public Arbitrary<UserAccountDetails> genUserAccountDetails() {
+    public static Arbitrary<UserAccountDetails> genUserAccountDetails() {
         return genUserAccountDetailsDto().map(dto -> {
             UserAccountDetails userAccountDetails = new UserAccountDetails();
 

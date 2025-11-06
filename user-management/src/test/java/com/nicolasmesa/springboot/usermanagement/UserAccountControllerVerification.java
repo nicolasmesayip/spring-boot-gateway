@@ -1,7 +1,7 @@
 package com.nicolasmesa.springboot.usermanagement;
 
+import com.nicolasmesa.springboot.common.dto.UserAccountDetailsDto;
 import com.nicolasmesa.springboot.testcommon.VerifyResponse;
-import com.nicolasmesa.springboot.usermanagement.dto.UserAccountDetailsDto;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 

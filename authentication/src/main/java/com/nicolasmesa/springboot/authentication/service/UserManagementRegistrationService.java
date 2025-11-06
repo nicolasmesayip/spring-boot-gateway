@@ -1,6 +1,6 @@
 package com.nicolasmesa.springboot.authentication.service;
 
-import com.nicolasmesa.springboot.usermanagement.dto.UserAccountDetailsDto;
+import com.nicolasmesa.springboot.common.dto.UserAccountDetailsDto;
 import jakarta.validation.Valid;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
