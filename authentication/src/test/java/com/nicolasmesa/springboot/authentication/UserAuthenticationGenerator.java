@@ -1,6 +1,8 @@
 package com.nicolasmesa.springboot.authentication;
 
+import com.nicolasmesa.springboot.authentication.dto.EmailVerificationDto;
 import com.nicolasmesa.springboot.authentication.dto.UserCredentialsDto;
+import com.nicolasmesa.springboot.authentication.dto.UserRegisterRequest;
 import com.nicolasmesa.springboot.authentication.entity.EmailVerification;
 import com.nicolasmesa.springboot.authentication.entity.UserAuthentication;
 import com.nicolasmesa.springboot.testcommon.Generators;
@@ -10,6 +12,8 @@ import net.jqwik.api.Combinators;
 import net.jqwik.api.Provide;
 
 import java.time.LocalDateTime;
+
+import static com.nicolasmesa.springboot.testcommon.UserAccountDtoGenerator.genUserAccountDetailsDto;
 
 public class UserAuthenticationGenerator extends Generators {
 
@@ -63,7 +67,17 @@ public class UserAuthenticationGenerator extends Generators {
     }
 
     @Provide
+    public Arbitrary<EmailVerificationDto> genEmailVerificationDto() {
+        return Combinators.combine(genEmailAddress, genVerificationCode()).as(EmailVerificationDto::new);
+    }
+
+    @Provide
     public Arbitrary<String> genEmailAddress() {
         return genEmailAddress;
+    }
+
+    @Provide
+    public Arbitrary<UserRegisterRequest> genUserRegisterRequest() {
+        return Combinators.combine(genUserCredentialsDto(), genUserAccountDetailsDto()).as(UserRegisterRequest::new);
     }
 }
