@@ -1,0 +1,21 @@
+server:
+  port: ""
+
+spring:
+  application:
+    name: products
+
+  datasource:
+    url: ""
+    driverClassName: org.h2.Driver
+    username: ""
+    password: ""
+
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: validate
+
+  h2:
+    console:
+      enabled: true

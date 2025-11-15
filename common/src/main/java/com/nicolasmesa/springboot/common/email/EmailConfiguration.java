@@ -2,7 +2,7 @@ package com.nicolasmesa.springboot.common.email;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-@ConfigurationProperties(prefix = "email-configuration")
+@ConfigurationProperties(prefix = "spring.email-configuration")
 public record EmailConfiguration(
         String host,
         String port,

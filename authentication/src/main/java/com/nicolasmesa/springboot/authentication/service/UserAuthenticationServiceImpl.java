@@ -26,14 +26,14 @@ public class UserAuthenticationServiceImpl implements UserAuthenticationService 
     private final UserAuthenticationRepository userAuthenticationRepository;
     private final AuthenticationManager authenticationManager;
     private final JwtTokenUtil jwtTokenUtil;
-    private final EmailVerificationServiceImpl emailVerificationServiceImpl;
+    private final EmailVerificationService emailVerificationService;
 
-    public UserAuthenticationServiceImpl(PasswordEncoder passwordEncoder, UserAuthenticationRepository userAuthenticationRepository, AuthenticationManager authenticationManager, JwtTokenUtil jwtTokenUtil, EmailVerificationServiceImpl emailVerificationServiceImpl) {
+    public UserAuthenticationServiceImpl(PasswordEncoder passwordEncoder, UserAuthenticationRepository userAuthenticationRepository, AuthenticationManager authenticationManager, JwtTokenUtil jwtTokenUtil, EmailVerificationService emailVerificationService) {
         this.passwordEncoder = passwordEncoder;
         this.userAuthenticationRepository = userAuthenticationRepository;
         this.authenticationManager = authenticationManager;
         this.jwtTokenUtil = jwtTokenUtil;
-        this.emailVerificationServiceImpl = emailVerificationServiceImpl;
+        this.emailVerificationService = emailVerificationService;
     }
 
     @Override
@@ -60,7 +60,7 @@ public class UserAuthenticationServiceImpl implements UserAuthenticationService 
     @Override
     public AuthResponse resetPassword(String email) {
         if (!userAuthenticationRepository.existsById(email)) throw new UserNotFoundException(email);
-        emailVerificationServiceImpl.sendEmail(email);
+        emailVerificationService.sendEmail(email);
         return new AuthResponse(null, "Email verification sent.");
     }
 
@@ -68,9 +68,9 @@ public class UserAuthenticationServiceImpl implements UserAuthenticationService 
     public AuthResponse verifyOTPCode(EmailVerification emailDetails) {
         if (!userAuthenticationRepository.existsById(emailDetails.getEmail()))
             throw new UserNotFoundException(emailDetails.getEmail());
-        if (!emailVerificationServiceImpl.isOTPCodeValid(emailDetails)) throw new UnAuthorizedException();
+        if (!emailVerificationService.isOTPCodeValid(emailDetails)) throw new UnAuthorizedException();
 
-        emailVerificationServiceImpl.deleteValidatedOTPCode(emailDetails);
+        emailVerificationService.deleteValidatedOTPCode(emailDetails);
         return new AuthResponse(null, "Email verified successfully.");
     }
 

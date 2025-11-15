@@ -1,0 +1,29 @@
+server:
+  port: ""
+
+spring:
+  application:
+    name: user-management
+
+  datasource:
+    url: ""
+    driverClassName: org.h2.Driver
+    username: ""
+    password: ""
+
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: update
+
+  h2:
+    console:
+      enabled: true
+
+  email-configuration:
+    host: smtp.gmail.com
+    port: 587
+    auth: true
+    enableTLS: true
+    senderEmail: ""
+    senderPassword: ""
