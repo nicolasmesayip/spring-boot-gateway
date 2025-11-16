@@ -49,7 +49,7 @@ public class UserAuthenticationServiceTest extends UserAuthenticationGenerator {
     @Property
     public void login(@ForAll("genUserAuthentication") UserAuthentication userAuthentication, @ForAll("genJwtToken") String jwtToken) {
         UserCredentialsDto userCredentialsDto = new UserCredentialsDto(userAuthentication.getEmailAddress(), userAuthentication.getHashedPassword());
-        userAuthentication.setAccountLocked(false);
+        userAuthentication.setIsAccountLocked(false);
         userAuthentication.setLastLoginAt(LocalDateTime.now());
         Authentication mockAuth = new UsernamePasswordAuthenticationToken(userAuthentication.getEmailAddress(), userAuthentication.getHashedPassword());
 
@@ -82,7 +82,7 @@ public class UserAuthenticationServiceTest extends UserAuthenticationGenerator {
     @Property
     public void failedLoginLockedAccount(@ForAll("genUserAuthentication") UserAuthentication userAuthentication) {
         UserCredentialsDto userCredentialsDto = new UserCredentialsDto(userAuthentication.getEmailAddress(), userAuthentication.getHashedPassword());
-        userAuthentication.setAccountLocked(true);
+        userAuthentication.setIsAccountLocked(true);
         Mockito.when(userAuthenticationRepository.findById(userCredentialsDto.emailAddress())).thenReturn(Optional.of(userAuthentication));
 
         assertThrows(AccountLockedException.class, () -> {
@@ -96,7 +96,7 @@ public class UserAuthenticationServiceTest extends UserAuthenticationGenerator {
     @Property
     public void failedLoginLockedAccount2(@ForAll("genUserAuthentication") UserAuthentication userAuthentication) {
         UserCredentialsDto userCredentialsDto = new UserCredentialsDto(userAuthentication.getEmailAddress(), userAuthentication.getHashedPassword());
-        userAuthentication.setAccountLocked(false);
+        userAuthentication.setIsAccountLocked(false);
         userAuthentication.setFailedLoginAttempts(userAuthentication.MAXIMUM_LOGIN_ATTEMPTS);
 
         Mockito.when(userAuthenticationRepository.findById(userCredentialsDto.emailAddress())).thenReturn(Optional.of(userAuthentication));
@@ -114,7 +114,7 @@ public class UserAuthenticationServiceTest extends UserAuthenticationGenerator {
     @Property
     public void failedLoginInvalidCredentials(@ForAll("genUserAuthentication") UserAuthentication userAuthentication) {
         UserCredentialsDto userCredentialsDto = new UserCredentialsDto(userAuthentication.getEmailAddress(), userAuthentication.getHashedPassword());
-        userAuthentication.setAccountLocked(false);
+        userAuthentication.setIsAccountLocked(false);
         Mockito.when(userAuthenticationRepository.findById(userCredentialsDto.emailAddress())).thenReturn(Optional.of(userAuthentication));
         Mockito.when(passwordEncoder.matches(userCredentialsDto.password(), userCredentialsDto.password())).thenReturn(false);
 
@@ -128,7 +128,7 @@ public class UserAuthenticationServiceTest extends UserAuthenticationGenerator {
     @Property
     public void failedLoginAuthenticationException(@ForAll("genUserAuthentication") UserAuthentication userAuthentication) {
         UserCredentialsDto userCredentialsDto = new UserCredentialsDto(userAuthentication.getEmailAddress(), userAuthentication.getHashedPassword());
-        userAuthentication.setAccountLocked(false);
+        userAuthentication.setIsAccountLocked(false);
         Authentication mockAuth = new UsernamePasswordAuthenticationToken(userAuthentication.getEmailAddress(), userAuthentication.getHashedPassword());
 
         Mockito.when(userAuthenticationRepository.findById(userCredentialsDto.emailAddress())).thenReturn(Optional.of(userAuthentication));
@@ -145,7 +145,7 @@ public class UserAuthenticationServiceTest extends UserAuthenticationGenerator {
     @Property
     public void failedLoginInvalidJwtKey(@ForAll("genUserAuthentication") UserAuthentication userAuthentication) {
         UserCredentialsDto userCredentialsDto = new UserCredentialsDto(userAuthentication.getEmailAddress(), userAuthentication.getHashedPassword());
-        userAuthentication.setAccountLocked(false);
+        userAuthentication.setIsAccountLocked(false);
         Authentication mockAuth = new UsernamePasswordAuthenticationToken(userAuthentication.getEmailAddress(), userAuthentication.getHashedPassword());
 
         Mockito.when(userAuthenticationRepository.findById(userCredentialsDto.emailAddress())).thenReturn(Optional.of(userAuthentication));
@@ -181,7 +181,7 @@ public class UserAuthenticationServiceTest extends UserAuthenticationGenerator {
 
     @Property
     public void verifyOTPCode(@ForAll("genEmailVerification") EmailVerification emailVerification) {
-        Mockito.when(userAuthenticationRepository.existsById(emailVerification.getEmail())).thenReturn(true);
+        Mockito.when(userAuthenticationRepository.existsById(emailVerification.getEmailAddress())).thenReturn(true);
         Mockito.when(emailVerificationServiceImpl.isOTPCodeValid(emailVerification)).thenReturn(true);
 
         AuthResponse response = userAuthenticationService.verifyOTPCode(emailVerification);
@@ -193,7 +193,7 @@ public class UserAuthenticationServiceTest extends UserAuthenticationGenerator {
 
     @Property
     public void failedVerifyingOTPCodeUserNotFound(@ForAll("genEmailVerification") EmailVerification emailVerification) {
-        Mockito.when(userAuthenticationRepository.existsById(emailVerification.getEmail())).thenReturn(false);
+        Mockito.when(userAuthenticationRepository.existsById(emailVerification.getEmailAddress())).thenReturn(false);
 
         assertThrows(UserNotFoundException.class, () -> {
             userAuthenticationService.verifyOTPCode(emailVerification);
@@ -204,7 +204,7 @@ public class UserAuthenticationServiceTest extends UserAuthenticationGenerator {
 
     @Property
     public void failedVerifyingOTPCodeInvalidOTP(@ForAll("genEmailVerification") EmailVerification emailVerification) {
-        Mockito.when(userAuthenticationRepository.existsById(emailVerification.getEmail())).thenReturn(true);
+        Mockito.when(userAuthenticationRepository.existsById(emailVerification.getEmailAddress())).thenReturn(true);
         Mockito.when(emailVerificationServiceImpl.isOTPCodeValid(emailVerification)).thenReturn(false);
 
         assertThrows(UnAuthorizedException.class, () -> {

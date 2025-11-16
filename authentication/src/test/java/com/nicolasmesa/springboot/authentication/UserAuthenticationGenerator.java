@@ -25,7 +25,7 @@ public class UserAuthenticationGenerator extends Generators {
             userAuthentication.setEmailAddress(userCredentials.emailAddress());
             userAuthentication.setHashedPassword(userCredentials.password());
             userAuthentication.setFailedLoginAttempts(0);
-            userAuthentication.setAccountLocked(false);
+            userAuthentication.setIsAccountLocked(false);
             userAuthentication.setPasswordUpdatedAt(genLocalDateTimeInPast.sample());
             userAuthentication.setLastLoginAt(genLocalDateTimeInPast.sample());
             userAuthentication.setRegisteredAt(genLocalDateTimeInPast.sample());

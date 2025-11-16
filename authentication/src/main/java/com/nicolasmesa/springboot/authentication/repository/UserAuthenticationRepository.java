@@ -19,6 +19,6 @@ public interface UserAuthenticationRepository extends JpaRepository<UserAuthenti
 
     @Modifying(clearAutomatically = true)
     @Transactional
-    @Query("Update UserAuthentication u SET u.accountLocked = false, u.failedLoginAttempts = 0 WHERE u.emailAddress =:emailAddress")
+    @Query("Update UserAuthentication u SET u.isAccountLocked = false, u.failedLoginAttempts = 0 WHERE u.emailAddress =:emailAddress")
     void unlockAccount(@Param("emailAddress") String emailAddress);
 }

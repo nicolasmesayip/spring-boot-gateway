@@ -10,6 +10,6 @@ public record EmailVerificationDto(
         @Email(message = "Invalid email format")
         String emailAddress,
 
-        int verificationOtpCode
+        Integer verificationOtpCode
 ) {
 }

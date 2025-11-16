@@ -41,7 +41,7 @@ public class EmailVerificationServiceImpl extends EmailSender implements EmailVe
 
     @Override
     public boolean isOTPCodeValid(EmailVerification emailVerificationDetails) {
-        Optional<EmailVerification> otpFromDb = emailVerificationRepository.findById(emailVerificationDetails.getEmail());
+        Optional<EmailVerification> otpFromDb = emailVerificationRepository.findById(emailVerificationDetails.getEmailAddress());
         if (otpFromDb.isEmpty()) return false;
         if (otpFromDb.get().getVerificationOtpCode() != emailVerificationDetails.getVerificationOtpCode()) return false;
 
@@ -51,7 +51,7 @@ public class EmailVerificationServiceImpl extends EmailSender implements EmailVe
 
     @Override
     public void deleteValidatedOTPCode(EmailVerification emailVerificationDetails) {
-        emailVerificationRepository.deleteById(emailVerificationDetails.getEmail());
+        emailVerificationRepository.deleteById(emailVerificationDetails.getEmailAddress());
     }
 
     public static EmailVerification generateVerificationCode(String email) {

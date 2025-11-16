@@ -6,19 +6,15 @@ spring:
     name: authentication
 
   datasource:
-    url: jdbc:h2:mem:testdb
-    driverClassName: org.h2.Driver
+    url: ""
+    driverClassName: com.mysql.cj.jdbc.Driver
     username: ""
     password: ""
 
   jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
+    database-platform: org.hibernate.dialect.MySQLDialect
     hibernate:
-      ddl-auto: update
-
-  h2:
-    console:
-      enabled: true
+      ddl-auto: validate
 
   email-configuration:
     host: smtp.gmail.com

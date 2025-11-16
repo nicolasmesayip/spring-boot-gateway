@@ -40,7 +40,7 @@ public class UserAuthenticationServiceImpl implements UserAuthenticationService 
     public AuthResponse login(UserCredentialsDto credentials) {
         UserAuthentication userAuthentication = userAuthenticationRepository.findById(credentials.emailAddress()).orElseThrow(() -> new UserNotFoundException(credentials.emailAddress()));
 
-        if (userAuthentication.isAccountLocked()) throw new AccountLockedException();
+        if (userAuthentication.getIsAccountLocked()) throw new AccountLockedException();
         if (!verifyPassword(userAuthentication, credentials)) {
             increaseFailedLoginAttempt(userAuthentication);
             throw new UnAuthorizedException();
@@ -66,8 +66,8 @@ public class UserAuthenticationServiceImpl implements UserAuthenticationService 
 
     @Override
     public AuthResponse verifyOTPCode(EmailVerification emailDetails) {
-        if (!userAuthenticationRepository.existsById(emailDetails.getEmail()))
-            throw new UserNotFoundException(emailDetails.getEmail());
+        if (!userAuthenticationRepository.existsById(emailDetails.getEmailAddress()))
+            throw new UserNotFoundException(emailDetails.getEmailAddress());
         if (!emailVerificationService.isOTPCodeValid(emailDetails)) throw new UnAuthorizedException();
 
         emailVerificationService.deleteValidatedOTPCode(emailDetails);
@@ -94,7 +94,7 @@ public class UserAuthenticationServiceImpl implements UserAuthenticationService 
 
     private void increaseFailedLoginAttempt(UserAuthentication userAuthentication) {
         if (userAuthentication.getFailedLoginAttempts() == userAuthentication.MAXIMUM_LOGIN_ATTEMPTS) {
-            userAuthentication.setAccountLocked(true);
+            userAuthentication.setIsAccountLocked(true);
             resetPassword(userAuthentication.getEmailAddress());
         } else {
             userAuthentication.setFailedLoginAttempts(userAuthentication.getFailedLoginAttempts() + 1);
