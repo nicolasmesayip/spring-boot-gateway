@@ -1,6 +1,24 @@
 server:
-  port: ""
+  port: 8080
 
 spring:
   application:
     name: api-gateway
+  main:
+    web-application-type: reactive
+
+  cloud:
+    gateway:
+      routes:
+        - id: authentication-service
+          uri: http://localhost:8090
+          predicates:
+            - Path=/api/auth/**
+        - id: user-management-service
+          uri: http://localhost:8081
+          predicates:
+            - Path=/api/users/**
+        - id: products-service
+          uri: http://localhost:8082
+          predicates:
+            - Path=/api/products/**, /api/categories/**, /api/discounts/**
