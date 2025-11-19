@@ -6,10 +6,10 @@ spring:
     name: products
 
   datasource:
-    url: ""
+    url: "${DB_URL}"
     driverClassName: com.mysql.cj.jdbc.Driver
-    username: ""
-    password: ""
+    username: "${DB_USERNAME}"
+    password: "${DB_PASSWORD}"
 
   jpa:
     database-platform: org.hibernate.dialect.MySQLDialect
