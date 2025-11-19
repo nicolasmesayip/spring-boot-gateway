@@ -12,7 +12,7 @@ pipeline {
     stages {
         stage('Checkout') {
             sshagent(['github-ssh-key']) {
-                        git 'git@github.com:nicomesa/spring-boot-gateway.git'
+                        git 'git@github.com:nicolasmesayip/spring-boot-gateway.git'
             }
         }
 
