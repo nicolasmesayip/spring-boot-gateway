@@ -9,7 +9,7 @@
         <module>authentication</module>
         <module>common</module>
         <module>test</module>
-        <module>products</module>
+        <module>products-service</module>
         <module>test-common</module>
     </modules>
     <parent>
