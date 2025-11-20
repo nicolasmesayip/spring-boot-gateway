@@ -9,4 +9,4 @@ resources:
   - secret-uat.yaml
 
 patchesStrategicMerge:
-  - replica-patch.yaml
+  - replicas-uat.yaml
