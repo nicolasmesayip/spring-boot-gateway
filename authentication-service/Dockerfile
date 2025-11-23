@@ -7,7 +7,7 @@ WORKDIR /build
 COPY . .
 
 # Build only this module
-RUN mvn -q -pl authentication -am clean package -DskipTests
+RUN mvn -q -pl authentication-service -am clean package -DskipTests
 
 # ===== Run Stage =====
 FROM eclipse-temurin:21-jre
@@ -15,8 +15,8 @@ FROM eclipse-temurin:21-jre
 WORKDIR /app
 
 # Copy the final JAR
-COPY --from=build /build/authentication/target/*.jar authentication.jar
+COPY --from=build /build/authentication-service/target/*.jar authentication-service.jar
 
 EXPOSE 8090
 
-ENTRYPOINT ["java","-jar","/app/authentication.jar"]
+ENTRYPOINT ["java","-jar","/app/authentication-service.jar"]

@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: authentication-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: authentication-service
+  template:
+    metadata:
+      labels:
+        app: authentication-service
+    spec:
+      containers:
+        - name: authentication-service
+          image: nicomesa/authentication-service:latest
+          envFrom:
+            - configMapRef:
+                name: authentication-service-config
+            - secretRef:
+                name: authentication-service-secrets
+          volumeMounts:
+            - name: config-volume
+              mountPath: /config
+              readOnly: true
+          env:
+            - name: SPRING_CONFIG_LOCATION
+              value: /config/application.yaml
+      volumes:
+        - name: config-volume
+          configMap:
+            name: authentication-service-template

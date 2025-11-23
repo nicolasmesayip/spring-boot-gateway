@@ -6,7 +6,7 @@
     <modules>
         <module>api-gateway</module>
         <module>user-management-service</module>
-        <module>authentication</module>
+        <module>authentication-service</module>
         <module>common</module>
         <module>products-service</module>
         <module>test-common</module>
