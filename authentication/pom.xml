@@ -74,7 +74,7 @@
         </dependency>
         <dependency>
             <groupId>com.nicolasmesa.springboot</groupId>
-            <artifactId>user-management</artifactId>
+            <artifactId>user-management-service</artifactId>
             <version>0.0.1-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>

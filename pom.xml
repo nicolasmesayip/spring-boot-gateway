@@ -5,7 +5,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>api-gateway</module>
-        <module>user-management</module>
+        <module>user-management-service</module>
         <module>authentication</module>
         <module>common</module>
         <module>products-service</module>

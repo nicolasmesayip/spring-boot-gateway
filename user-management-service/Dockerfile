@@ -7,7 +7,7 @@ WORKDIR /build
 COPY . .
 
 # Build only this module
-RUN mvn -q -pl user-management -am clean package -DskipTests
+RUN mvn -q -pl user-management-service -am clean package -DskipTests
 
 # ===== Run Stage =====
 FROM eclipse-temurin:21-jre
@@ -15,8 +15,8 @@ FROM eclipse-temurin:21-jre
 WORKDIR /app
 
 # Copy the final JAR
-COPY --from=build /build/user-management/target/*.jar user-management.jar
+COPY --from=build /build/user-management-service/target/*.jar user-management-service.jar
 
 EXPOSE 8081
 
-ENTRYPOINT ["java","-jar","/app/user-management.jar"]
+ENTRYPOINT ["java","-jar","/app/user-management-service.jar"]
