@@ -1,1 +1,2 @@
 products-service
+user-management-service

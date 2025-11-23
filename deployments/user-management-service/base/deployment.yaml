@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-management-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user-management-service
+  template:
+    metadata:
+      labels:
+        app: user-management-service
+    spec:
+      containers:
+        - name: user-management-service
+          image: nicomesa/user-management-service:1.0.0
+          envFrom:
+            - configMapRef:
+                name: user-management-service-config
+            - secretRef:
+                name: user-management-service-secrets
+          volumeMounts:
+            - name: config-volume
+              mountPath: /config
+              readOnly: true
+          env:
+            - name: SPRING_CONFIG_LOCATION
+              value: /config/application.yaml
+      volumes:
+        - name: config-volume
+          configMap:
+            name: user-management-service-template

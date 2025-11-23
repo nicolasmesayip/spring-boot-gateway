@@ -6,10 +6,10 @@ spring:
     name: user-management
 
   datasource:
-    url: ""
+    url: "${DB_URL}"
     driverClassName: com.mysql.cj.jdbc.Driver
-    username: ""
-    password: ""
+    username: "${DB_USERNAME}"
+    password: "${DB_PASSWORD}"
 
   jpa:
     database-platform: org.hibernate.dialect.MySQLDialect
@@ -21,5 +21,5 @@ spring:
     port: 587
     auth: true
     enableTLS: true
-    senderEmail: ""
-    senderPassword: ""
+    senderEmail: "${EMAIL_ADDRESS}"
+    senderPassword: "${EMAIL_PASSWORD}"
