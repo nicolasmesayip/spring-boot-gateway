@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: products-service
-          image: nicomesa/products-service:1.0.0
+          image: nicomesa/products-service:latest
           envFrom:
             - configMapRef:
                 name: products-service-config
