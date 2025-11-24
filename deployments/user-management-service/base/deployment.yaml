@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: user-management-service
-          image: nicomesa/user-management-service:latest
+          image: nicomesa/user-management-service:1.0.0
           envFrom:
             - configMapRef:
                 name: user-management-service-config

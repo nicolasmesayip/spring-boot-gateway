@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: authentication-service
-          image: nicomesa/authentication-service:latest
+          image: nicomesa/authentication-service:1.0.0
           envFrom:
             - configMapRef:
                 name: authentication-service-config

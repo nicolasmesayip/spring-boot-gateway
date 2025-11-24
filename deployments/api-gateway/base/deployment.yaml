@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: api-gateway
-          image: nicomesa/api-gateway:latest
+          image: nicomesa/api-gateway:1.0.0
           volumeMounts:
             - name: config-volume
               mountPath: /config
