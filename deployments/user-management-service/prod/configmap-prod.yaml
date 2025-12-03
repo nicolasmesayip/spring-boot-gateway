@@ -3,5 +3,5 @@ kind: ConfigMap
 metadata:
   name: user-management-service-config
 data:
-  DB_URL: jdbc:mysql://31.220.81.38:3306/SBPS
-  SERVICE_PORT: 8081
+  DB_URL: "jdbc:mysql://31.220.81.38:3306/SBPS"
+  SERVICE_PORT: "8081"

@@ -33,7 +33,7 @@ while IFS= read -r app || [[ -n "$app" ]]; do
       DEPLOYMENT_NAME=$app
       IMAGE_NAME="nicomesa/$app:$IMAGE_TAG"
       echo "Updating $DEPLOYMENT_NAME image to $IMAGE_NAME"
-      kubectl set image deployment/$DEPLOYMENT_NAME $DEPLOYMENT_NAME=$IMAGE_NAME -n $ENV
+      kubectl set image deployment/$DEPLOYMENT_NAME $DEPLOYMENT_NAME=$IMAGE_NAME
     fi
 
     echo "$app deployed successfully"
