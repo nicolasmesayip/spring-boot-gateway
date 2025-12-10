@@ -20,8 +20,7 @@ if [ -n "$IMAGE_TAG" ]; then
   echo "Using image tag: $IMAGE_TAG"
 fi
 
-while IFS= read -r app; do
-  [[ -z "$app" ]] && continue  # skip empty lines
+while IFS= read -r app || [[ -n "$app" ]]; do
   APP_DIR="deployments/$app/$ENV"
   if [ -d "$APP_DIR" ]; then
     echo "Deploying $app..."
