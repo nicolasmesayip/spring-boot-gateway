@@ -23,3 +23,7 @@ spring:
     enableTLS: true
     senderEmail: "${EMAIL_ADDRESS}"
     senderPassword: "${EMAIL_PASSWORD}"
+
+  services:
+    user-management-service:
+      url: "http://user-management-service:8081"

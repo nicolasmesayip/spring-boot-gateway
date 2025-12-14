@@ -5,7 +5,7 @@ import jakarta.validation.Valid;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
-@FeignClient(name = "user-management", url = "http://localhost:8081")
+@FeignClient(name = "user-management-service", url = "${spring.services.user-management-service.url}")
 public interface UserManagementRegistrationService {
 
     @PostMapping("/api/users/register")

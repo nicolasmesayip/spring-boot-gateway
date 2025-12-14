@@ -15,3 +15,7 @@ spring:
     database-platform: org.hibernate.dialect.MySQLDialect
     hibernate:
       ddl-auto: validate
+
+  services:
+    products-service:
+      url: "http://products-service:${SERVICE_PORT}"
