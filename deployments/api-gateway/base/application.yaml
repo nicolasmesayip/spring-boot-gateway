@@ -11,14 +11,14 @@ spring:
     gateway:
       routes:
         - id: authentication-service
-          uri: http://localhost:${SERVICE_AUTH_PORT}
+          uri: http://authentication-service:${SERVICE_AUTH_PORT}
           predicates:
             - Path=/api/auth/**
         - id: user-management-service
-          uri: http://localhost:${SERVICE_USER_MANAGEMENT_PORT}
+          uri: http://user-management-service:${SERVICE_USER_MANAGEMENT_PORT}
           predicates:
             - Path=/api/users/**
         - id: products-service
-          uri: http://localhost:${SERVICE_PRODUCTS_PORT}
+          uri: http://products-service:${SERVICE_PRODUCTS_PORT}
           predicates:
             - Path=/api/products/**, /api/categories/**, /api/discounts/**
