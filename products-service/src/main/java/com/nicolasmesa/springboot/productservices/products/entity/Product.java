@@ -32,7 +32,7 @@ public class Product {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 3)
-    private Currency currency;
+    private Currency currency = Currency.GBP;
 
     @Column(nullable = false)
     private Integer stockAvailable;

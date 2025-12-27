@@ -10,6 +10,7 @@
         <module>common</module>
         <module>products-service</module>
         <module>test-common</module>
+        <module>shopping-cart-service</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>

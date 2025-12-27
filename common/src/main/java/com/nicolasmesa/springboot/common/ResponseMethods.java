@@ -24,6 +24,10 @@ public class ResponseMethods {
         return errorResponse(error, HttpStatus.BAD_REQUEST);
     }
 
+    public static <T> ResponseEntity<ApiResponse<T>> serviceUnavailable(String error) {
+        return errorResponse(List.of(error), HttpStatus.SERVICE_UNAVAILABLE);
+    }
+
     public static <T> ResponseEntity<ApiResponse<T>> badRequest(String error) {
         return badRequest(List.of(error));
     }
