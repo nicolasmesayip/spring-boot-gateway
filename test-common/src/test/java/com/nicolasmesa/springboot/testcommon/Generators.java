@@ -3,6 +3,7 @@ package com.nicolasmesa.springboot.testcommon;
 import com.nicolasmesa.springboot.common.model.Currency;
 import net.jqwik.api.Arbitraries;
 import net.jqwik.api.Arbitrary;
+import net.jqwik.api.Combinators;
 import net.jqwik.time.api.DateTimes;
 
 import java.math.BigDecimal;
@@ -38,4 +39,7 @@ public class Generators {
 
         return personal + "@" + domain + "." + tld;
     });
+
+    public static Arbitrary<String> genSlug = Combinators.combine(genStringLengthBetween5To15, genStringLengthBetween5To15, genInteger)
+            .as((str1, str2, integer) -> str1.toLowerCase() + "-" + str2.toLowerCase() + "-" + integer);
 }

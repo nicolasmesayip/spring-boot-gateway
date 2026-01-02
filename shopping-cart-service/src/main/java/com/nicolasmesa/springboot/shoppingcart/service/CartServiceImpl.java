@@ -27,8 +27,9 @@ public class CartServiceImpl implements CartService {
         this.productPricingService = productPricingService;
     }
 
+    @Override
     public CartDto getCart(String emailAddress) {
-        Cart cart = cartRepository.findByUserId(emailAddress).orElseThrow(() -> new CartNotFound(emailAddress));
+        Cart cart = cartRepository.findByUserIdAndStatus(emailAddress, CartStatus.ACTIVE).orElseThrow(() -> new CartNotFound(emailAddress));
         return cartMapper.toDto(cart);
     }
 
