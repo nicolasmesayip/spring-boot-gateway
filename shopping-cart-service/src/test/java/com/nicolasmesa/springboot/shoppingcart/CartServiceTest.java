@@ -149,7 +149,7 @@ public class CartServiceTest extends CartGenerator {
         CartItemDto cartItemToRemove = cartDto.items().get(0);
 
         Mockito.when(cartRepository.findByUserIdAndStatus(emailAddress, CartStatus.ACTIVE)).thenReturn(Optional.of(cart));
-        cartService.removeItem(emailAddress, cartItemToRemove);
+        cartService.removeItem(emailAddress, cartItemToRemove.productSlug());
 
         Mockito.verify(cartRepository, Mockito.times(1)).save(cart);
     }
@@ -163,7 +163,7 @@ public class CartServiceTest extends CartGenerator {
 
         Mockito.when(cartRepository.findByUserIdAndStatus(emailAddress, CartStatus.ACTIVE)).thenReturn(Optional.empty());
         assertThrows(CartNotFound.class, () -> {
-            cartService.removeItem(emailAddress, cartItemToRemove);
+            cartService.removeItem(emailAddress, cartItemToRemove.productSlug());
         });
 
         Mockito.verify(cartRepository, Mockito.times(0)).save(cart);

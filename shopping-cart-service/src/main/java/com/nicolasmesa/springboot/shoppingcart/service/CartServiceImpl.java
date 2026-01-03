@@ -51,11 +51,10 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public void removeItem(String emailAddress, CartItemDto itemDto) {
-        CartItem item = cartMapper.toEntity(itemDto);
+    public void removeItem(String emailAddress, String productSlug) {
         Cart cart = cartRepository.findByUserIdAndStatus(emailAddress, CartStatus.ACTIVE).orElseThrow(() -> new CartNotFound(emailAddress));
 
-        cart.removeItem(item);
+        cart.removeItem(productSlug);
 
         cartMapper.toDto(cartRepository.save(cart));
     }

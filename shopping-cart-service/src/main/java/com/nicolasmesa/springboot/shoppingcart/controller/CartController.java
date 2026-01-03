@@ -5,7 +5,6 @@ import com.nicolasmesa.springboot.common.model.ApiResponse;
 import com.nicolasmesa.springboot.shoppingcart.dto.CartDto;
 import com.nicolasmesa.springboot.shoppingcart.dto.CartItemDto;
 import com.nicolasmesa.springboot.shoppingcart.service.CartService;
-import com.nicolasmesa.springboot.shoppingcart.service.CartServiceImpl;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -17,11 +16,11 @@ import org.springframework.web.bind.annotation.*;
 public class CartController {
     private final CartService cartService;
 
-    public CartController(CartServiceImpl cartService) {
+    public CartController(CartService cartService) {
         this.cartService = cartService;
     }
 
-    @GetMapping(path = "/")
+    @GetMapping
     public ResponseEntity<ApiResponse<CartDto>> getCart(@RequestHeader("X-GATEWAY-EMAIL") String emailAddress) {
         return ResponseMethods.ok(cartService.getCart(emailAddress));
     }
@@ -31,19 +30,20 @@ public class CartController {
         return ResponseMethods.created(cartService.addItem(emailAddress, itemDto));
     }
 
-    @DeleteMapping(path = "/items")
-    public ResponseEntity<ApiResponse<CartDto>> removeItem(@RequestHeader("X-GATEWAY-EMAIL") String emailAddress, @NotNull @RequestBody CartItemDto itemDto) {
-        cartService.removeItem(emailAddress, itemDto);
+    @DeleteMapping(path = "/items/{productSlug}")
+    public ResponseEntity<ApiResponse<CartDto>> removeItem(@RequestHeader("X-GATEWAY-EMAIL") String emailAddress, @NotNull @PathVariable String productSlug) {
+        cartService.removeItem(emailAddress, productSlug);
         return ResponseMethods.noContent();
     }
 
-    @PutMapping(path = "/items")
-    public ResponseEntity<ApiResponse<CartDto>> updateItem(@RequestHeader("X-GATEWAY-EMAIL") String emailAddress, @NotNull @RequestBody CartItemDto itemDto) {
+    @PutMapping(path = "/items/{productSlug}")
+    public ResponseEntity<ApiResponse<CartDto>> updateItem(@RequestHeader("X-GATEWAY-EMAIL") String emailAddress, @NotNull @PathVariable String productSlug, @NotNull @RequestBody Integer quantity) {
+        CartItemDto itemDto = new CartItemDto(productSlug, quantity);
         cartService.updateItem(emailAddress, itemDto);
         return ResponseMethods.noContent();
     }
 
-    @DeleteMapping(path = "/clear")
+    @DeleteMapping
     public ResponseEntity<ApiResponse<CartDto>> clearCart(@RequestHeader("X-GATEWAY-EMAIL") String emailAddress) {
         cartService.clearCart(emailAddress);
         return ResponseMethods.noContent();

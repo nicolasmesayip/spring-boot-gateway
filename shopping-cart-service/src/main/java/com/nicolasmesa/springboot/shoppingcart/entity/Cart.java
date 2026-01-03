@@ -58,8 +58,8 @@ public class Cart {
         item.setCart(this);
     }
 
-    public void removeItem(CartItem item) {
-        items.removeIf(itemP -> itemP.getProductSlug().equals(item.getProductSlug()));
+    public void removeItem(String productSlug) {
+        items.removeIf(itemP -> itemP.getProductSlug().equals(productSlug));
     }
 
     public void updateItem(CartItem item) {

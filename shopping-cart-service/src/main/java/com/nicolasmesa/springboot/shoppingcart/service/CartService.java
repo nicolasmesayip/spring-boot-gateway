@@ -8,7 +8,7 @@ public interface CartService {
 
     CartDto addItem(String emailAddress, CartItemDto itemDto);
 
-    void removeItem(String emailAddress, CartItemDto itemDto);
+    void removeItem(String emailAddress, String productSlug);
 
     void updateItem(String emailAddress, CartItemDto itemDto);
 
