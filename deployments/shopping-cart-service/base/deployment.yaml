@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shopping-cart-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: shopping-cart-service
+  template:
+    metadata:
+      labels:
+        app: shopping-cart-service
+    spec:
+      containers:
+        - name: shopping-cart-service
+          image: nicomesa/shopping-cart-service:1.0.0
+          envFrom:
+            - configMapRef:
+                name: shopping-cart-service-config
+            - secretRef:
+                name: shopping-cart-service-secrets
+          volumeMounts:
+            - name: config-volume
+              mountPath: /config
+              readOnly: true
+          env:
+            - name: SPRING_CONFIG_LOCATION
+              value: /config/application.yaml
+      volumes:
+        - name: config-volume
+          configMap:
+            name: shopping-cart-service-template

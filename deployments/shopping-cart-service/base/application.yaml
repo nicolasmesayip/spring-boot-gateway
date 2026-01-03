@@ -1,0 +1,21 @@
+server:
+  port: "${SERVICE_PORT}"
+
+spring:
+  application:
+    name: shopping-cart
+
+  datasource:
+    url: "${DB_URL}"
+    driverClassName: com.mysql.cj.jdbc.Driver
+    username: "${DB_USERNAME}"
+    password: "${DB_PASSWORD}"
+
+  jpa:
+    database-platform: org.hibernate.dialect.MySQLDialect
+    hibernate:
+      ddl-auto: validate
+
+  services:
+    products-service:
+      url: "http://products-service:${SERVICE_PORT}"
