@@ -64,6 +64,9 @@ public class CartServiceImpl implements CartService {
         CartItem item = cartMapper.toEntity(itemDto);
         Cart cart = cartRepository.findByUserIdAndStatus(emailAddress, CartStatus.ACTIVE).orElseThrow(() -> new CartNotFound(emailAddress));
 
+        ProductPricingDto productPricingDto = productPricingService.getProductPricing(itemDto.productSlug()).getData();
+
+        item.setUnitPrice(productPricingDto.price());
         cart.updateItem(item);
 
         cartMapper.toDto(cartRepository.save(cart));

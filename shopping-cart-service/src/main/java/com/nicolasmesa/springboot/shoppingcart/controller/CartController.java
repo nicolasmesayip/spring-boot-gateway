@@ -4,6 +4,7 @@ import com.nicolasmesa.springboot.common.ResponseMethods;
 import com.nicolasmesa.springboot.common.model.ApiResponse;
 import com.nicolasmesa.springboot.shoppingcart.dto.CartDto;
 import com.nicolasmesa.springboot.shoppingcart.dto.CartItemDto;
+import com.nicolasmesa.springboot.shoppingcart.dto.UpdateCartItemDto;
 import com.nicolasmesa.springboot.shoppingcart.service.CartService;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.http.ResponseEntity;
@@ -37,8 +38,8 @@ public class CartController {
     }
 
     @PutMapping(path = "/items/{productSlug}")
-    public ResponseEntity<ApiResponse<CartDto>> updateItem(@RequestHeader("X-GATEWAY-EMAIL") String emailAddress, @NotNull @PathVariable String productSlug, @NotNull @RequestBody Integer quantity) {
-        CartItemDto itemDto = new CartItemDto(productSlug, quantity);
+    public ResponseEntity<ApiResponse<CartDto>> updateItem(@RequestHeader("X-GATEWAY-EMAIL") String emailAddress, @NotNull @PathVariable String productSlug, @NotNull @RequestBody UpdateCartItemDto quantityDto) {
+        CartItemDto itemDto = new CartItemDto(productSlug, quantityDto.quantity());
         cartService.updateItem(emailAddress, itemDto);
         return ResponseMethods.noContent();
     }

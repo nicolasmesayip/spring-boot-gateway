@@ -3,6 +3,7 @@ package com.nicolasmesa.springboot.shoppingcart;
 import com.nicolasmesa.springboot.shoppingcart.controller.CartController;
 import com.nicolasmesa.springboot.shoppingcart.dto.CartDto;
 import com.nicolasmesa.springboot.shoppingcart.dto.CartItemDto;
+import com.nicolasmesa.springboot.shoppingcart.dto.UpdateCartItemDto;
 import com.nicolasmesa.springboot.shoppingcart.exception.CartExceptionHandler;
 import com.nicolasmesa.springboot.shoppingcart.exception.CartItemAlreadyExists;
 import com.nicolasmesa.springboot.shoppingcart.exception.CartItemNotFound;
@@ -127,7 +128,7 @@ public class CartControllerTest extends CartGenerator {
 
         ResultActions resultActions = mockMvc.perform(RequestBuilder.put("/api/cart/items/{productSlug}", cartItemDto.productSlug())
                 .header("X-GATEWAY-EMAIL", cartDto.userId())
-                .body(cartItemDto).body(updatedCartItem.quantity()));
+                .body(cartItemDto).body(new UpdateCartItemDto(updatedCartItem.quantity())));
 
         cartControllerVerification.verifyNoContent(resultActions);
     }
@@ -141,7 +142,7 @@ public class CartControllerTest extends CartGenerator {
 
         ResultActions resultActions = mockMvc.perform(RequestBuilder.put("/api/cart/items/{productSlug}", cartItemDto.productSlug())
                 .header("X-GATEWAY-EMAIL", cartDto.userId())
-                .body(cartItemDto).body(updatedCartItem.quantity()));
+                .body(cartItemDto).body(new UpdateCartItemDto(updatedCartItem.quantity())));
 
         cartControllerVerification.verifyErrors(resultActions, List.of("Cart not found for user: " + cartDto.userId()));
     }

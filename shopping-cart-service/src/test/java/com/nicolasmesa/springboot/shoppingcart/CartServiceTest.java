@@ -170,13 +170,14 @@ public class CartServiceTest extends CartGenerator {
     }
 
     @Property
-    public void updateItem(@ForAll("genCartDto") CartDto cartDto) {
+    public void updateItem(@ForAll("genCartDto") CartDto cartDto, @ForAll("genProductPricingDto") ProductPricingDto pricingDto) {
         String emailAddress = cartDto.userId();
 
         Cart cart = cartMapper.toEntity(cartDto);
         CartItemDto cartItemToUpdate = cartDto.items().get(0);
 
         Mockito.when(cartRepository.findByUserIdAndStatus(emailAddress, CartStatus.ACTIVE)).thenReturn(Optional.of(cart));
+        Mockito.when(productPricingService.getProductPricing(cartItemToUpdate.productSlug())).thenReturn(new ApiResponse<ProductPricingDto>(true, pricingDto, null));
         cartService.updateItem(emailAddress, cartItemToUpdate);
 
         Mockito.verify(cartRepository, Mockito.times(1)).save(cart);
@@ -198,13 +199,30 @@ public class CartServiceTest extends CartGenerator {
     }
 
     @Property
-    public void failedUpdatingInvalidItem(@ForAll("genCartDto") CartDto cartDto) {
+    public void failedUpdatingItemCartCantGetPrice(@ForAll("genCartDto") CartDto cartDto, @ForAll("genProductPricingDto") ProductPricingDto pricingDto) {
+        String emailAddress = cartDto.userId();
+
+        Cart cart = cartMapper.toEntity(cartDto);
+        CartItemDto cartItemToUpdate = cartDto.items().get(0);
+
+        Mockito.when(cartRepository.findByUserIdAndStatus(emailAddress, CartStatus.ACTIVE)).thenReturn(Optional.of(cart));
+        Mockito.when(productPricingService.getProductPricing(cartItemToUpdate.productSlug())).thenThrow(FeignException.BadRequest.class);
+        assertThrows(FeignException.BadRequest.class, () -> {
+            cartService.updateItem(emailAddress, cartItemToUpdate);
+        });
+
+        Mockito.verify(cartRepository, Mockito.times(0)).save(cart);
+    }
+
+    @Property
+    public void failedUpdatingInvalidItem(@ForAll("genCartDto") CartDto cartDto, @ForAll("genProductPricingDto") ProductPricingDto pricingDto) {
         String emailAddress = cartDto.userId();
 
         Cart cart = cartMapper.toEntity(cartDto);
         CartItemDto cartItemToUpdate = new CartItemDto("test-slug-0", 5);
 
         Mockito.when(cartRepository.findByUserIdAndStatus(emailAddress, CartStatus.ACTIVE)).thenReturn(Optional.of(cart));
+        Mockito.when(productPricingService.getProductPricing(cartItemToUpdate.productSlug())).thenReturn(new ApiResponse<ProductPricingDto>(true, pricingDto, null));
         assertThrows(CartItemNotFound.class, () -> {
             cartService.updateItem(emailAddress, cartItemToUpdate);
         });
